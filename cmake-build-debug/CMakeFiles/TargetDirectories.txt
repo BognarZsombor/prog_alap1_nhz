@@ -1,0 +1,3 @@
+C:/Users/Zsombor/Documents/CLion projects/prog_alap1_nhz/cmake-build-debug/CMakeFiles/prog_alap1_nhz.dir
+C:/Users/Zsombor/Documents/CLion projects/prog_alap1_nhz/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Zsombor/Documents/CLion projects/prog_alap1_nhz/cmake-build-debug/CMakeFiles/rebuild_cache.dir
