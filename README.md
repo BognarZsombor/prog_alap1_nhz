@@ -15,7 +15,8 @@ A program parancssoros vezérléssel fog működik.
 - A menü a parancssoron belül jelenik meg.
 - A felhasználó a felsorolt menüpontok közül a parancs beírásával tud választani.
 - Ezután írhatók az egyes parancsok paraméterei.
-- 6 parancs közül lehet választani:
+- 7 parancs közül lehet választani:
+    - segitseg (parancsok felsorolása)
     - beolvas (járatok beolvasása)
     - kiir (járatok kiírása)
     - mentes (járatok mentése)
@@ -30,6 +31,10 @@ Parancsot indítani a konzolon való futtatásával lehet, ezután kell a kötel
 ### Járat működése
 
 Egy járathoz tartozik egy busz, az első indulás időpontja, az utolsó indulás időpontja, a további idulások ideje (a következő azonos járatok hány perc múlva indulnak az első indulási időpont után), a járat megállóinak listája és a megállókból való indulás időpontja. A megállók, illetve megállókból való indulások listája az oda és visszautat is tartalmaznia kell, tehát a második megállónak kell lennie az utolsónak is.
+
+### Parancsok felsorolása (segitseg)
+
+Felsorolja a parancsokat.
 
 ### Járatok beolvasása (beolvas)
 
