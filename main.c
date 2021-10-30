@@ -36,11 +36,11 @@ int str_to_parancs(char sor[]) {
     // a parancsból leszedjük az előbb kiválasztott parancsot
     // átirjuk a parancsot kihagyva az összes elemet, az elejétől kezdődően
     int k = 0;
-    int j = i;
+    int j = i+1;
     while (sor[j] != '\n') {
         sor[k++] = sor[j++];
     }
-    sor[j] = '\0';
+    sor[k] = '\0';
 
     if (strcmp(parancs, "segitseg") == 0)
         return segitseg;
