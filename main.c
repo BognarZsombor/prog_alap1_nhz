@@ -85,58 +85,89 @@ char **sor_to_list(char sor[]) {
     return temp_sor;
 }
 
-/* beolvas_kezdo_m
- * A program indulásánal, ha létezik alap fájl, beolvassa belőle az alap megállókat.
+/* kov_szo
+ * Beolvassa a megadott fájlból a választóig tartó stringet.
+ * @param char valaszto Ez a feltétele a string végének
+ * @param FILE* fajl A fájl, amiből beolvassa a stringet
+ * @param char* szo_vege Azt jelzi, hogy mivel végződött a string (valaszto, \n, EOF)
+ * @return char* A beolvasott string
  * */
-Megallo *beolvas_kezdo_m(char *fajl) {
-    FILE *fp = fopen(fajl, "r");
-    if (!fp) {
-        //fájl nem létezik
-        fclose(fp);
-        return NULL;
-    }
+char *kov_szo(char valaszto, FILE *fajl, char *szo_vege) {
+    int meret = 0;
+    char *szo = (char*) malloc(meret * sizeof(char));
 
-    int meret = 1;
-    Megallo *megallok = (Megallo*) malloc(meret * sizeof(Megallo));
+    char c;
+    do {
+        meret++;
+        szo = (char*) realloc(szo, meret * sizeof(char));
+        c = getc(fajl);
+        szo[meret-1] = c;
+    } while (c != valaszto && c != '\n' && c != EOF);
 
-    int c;
+    szo_vege = c;
+    szo[meret-1] = '\0';
+    return szo;
+}
+
+/* beolvas_m_fg
+ * Beolvassa a megadott fájlból a megállókat.
+ * @param FILE* fajl A fájl, amiből beolvassa a megállókat
+ * @return Megallo* Megállók listája
+ * */
+Megallo *beolvas_m_fg(FILE *fajl) {
+    int m_meret = 0;
+    Megallo *megallok = (Megallo*) malloc(m_meret * sizeof(Megallo));
+    char szo_vege;
+
     do {
         // főmegálló beolvasása
-        int i = 0;
         Megallo m;
-        m.nev = (char*) malloc(51 * sizeof(char));
-        do {
-            c = getc(fp);
-            m.nev[i++] = c;
-        } while (c != ' ' && c != '\n' && c != EOF);
-        m.nev[i - 1] = '\0';
+        m.nev = kov_szo(',', fajl, &szo_vege);
 
         // további megállók beolvasása
-        i = 0;
+        int meret = 1;
+        m.megallok = (char**) malloc(meret * sizeof(char*));
+
         do {
-            int j = 0;
-            m.megallok[i] = (char*) malloc(51 * sizeof(char));
-            do {
-                c = getc(fp);
-                m.megallok[i][j++] = c;
-            } while (c != ',' && c != '\n' && c != EOF);
-            m.megallok[i][j - 1] = '\0';
-            i++;
-        } while (c != '\n' && c != EOF);
+            m.megallok[meret-1] = kov_szo(',', fajl, &szo_vege);
+            meret++;
+            m.megallok = (char**) realloc(m.megallok, meret * sizeof(char*));
+        } while (szo_vege != '\n' && szo_vege != EOF);
 
         //megálló mentése a listába
-        megallok = (Megallo*) realloc(megallok, meret * sizeof(Megallo));
-        megallok[meret - 1] = m;
-        meret++;
-    } while (c != EOF);
+        m_meret++;
+        megallok = (Megallo*) realloc(megallok, m_meret * sizeof(Megallo));
+        megallok[m_meret-1] = m;
+    } while (szo_vege != EOF);
 
-    fclose(fp);
+    fclose(fajl);
     return megallok;
 }
 
+/* beolvas_fg
+ * Beolvassa a megadott fájlból a járatokat.
+ * */
+Jarat *beolvas_fg(FILE *fajl) {
+    int meret = 1;
+    Jarat *jaratok = (Jarat*) malloc(meret * sizeof(Jarat));
+
+    int c;
+}
+
 int main() {
+    // megállók és járatok listája
+    Megallo *megallok;
+    Jarat *jaratok;
+
     //alap fájlok beolvasása ha léteznek
-    beolvas_kezdo_m("megallok.txt");
+    FILE *fajl = fopen("megallok.txt", "r");
+    if (fajl) {
+        megallok = beolvas_m_fg(fajl);
+    }
+    fajl = fopen("jaratok.txt", "r");
+    if (fajl) {
+        jaratok = beolvas_fg(fajl);
+    }
 
     bool futas = true;
     char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)

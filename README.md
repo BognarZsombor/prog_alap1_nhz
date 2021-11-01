@@ -71,11 +71,11 @@ Egy szöveges fájlt kell megadni (.txt kiterjesztés), ami a következőképpen
 megálló neve, további megállók
 
 ```
-megallo1 megallo2,megallo3,megallo4
-megallo3 megallo1,megallo4,megallo5
+megallo1,megallo2,megallo3,megallo4
+megallo3,megallo1,megallo4,megallo5
 ```
 
-Ahol a főmegálló szöközzel van elválasztva az azt követő listától, illetve a lista elemei vesszővel egymástól.
+Ahol minden megálló vesszővel van elválasztva egymástól, így a megállók nevében lehet szóközt használni.
 
 ### Járatok beolvasása (beolvas)
 
