@@ -4,23 +4,51 @@ Programozás alapjai1 Nagyházifeladat
 
 # Specifikáció
 
-A program segítségével buszjáratokat tudunk elmenteni és ezek állomásai között útvonalakat tervezni parancssorban.
+A program segítségével buszjáratokat lehet elmenteni és ezek állomásai között útvonalakat tervezni parancssorban.
+
+## Structok
+
+### Ido
+
+Egy idő formátum, ami órát és percet tud tárolni.
+
+- ora: Óra
+- perc: Perc
+
+### Megallo
+
+Egy megálló nevét és az innen gyalog elérhető megállókat tárolja. Ezekre lehet ebből a megállóból átszállni.
+
+- nev: Megálló neve
+- megallok: Innen elérhető megállók
+
+### Jarat
+
+A fő sturct, ami tartalmazza a járatok adatait.
+
+- nev: Buszjárat neve
+- elso_indulas: Napi legelső indulás
+- utolso_indulas: Napi legutolsó indulás
+- tovabbi_indulasok: Hány percenként indul a járat egy busza a nap folyamán
+- megallok: Milyen megállókban áll meg a járat
+- idopontok: Melyik megállóba mikor ér el a busz 00:00-s kezdéssel
 
 ## A program használata
 
 ### Menüvezérlés
 
-A program parancssoros vezérléssel fog működik.
+A program menüvezérléssel működik.
 
-- A menü a parancssoron belül jelenik meg.
 - A felhasználó a felsorolt menüpontok közül a parancs beírásával tud választani.
 - Ezután írhatók az egyes parancsok paraméterei.
-- 7 parancs közül lehet választani:
+- 8 parancs közül lehet választani:
     - segitseg (parancsok felsorolása)
+    - mbeolvas (megállók beolvasása)
     - beolvas (járatok beolvasása)
     - kiir (járatok kiírása)
     - mentes (járatok mentése)
     - megallo (megállók kiírása)
+    - atszallas (hova lehet átszállni)
     - utvonal (útvonaltervezés)
     - kilep (kilépes a programból)
 
@@ -28,20 +56,33 @@ A program parancssoros vezérléssel fog működik.
 
 Parancsot indítani a konzolon való futtatásával lehet, ezután kell a kötelező, illetve opcionális paramétereket szóközzel elválasztva megadni. Egy paraméteren belül nem lehet szóköz.
 
-### Járat működése
-
-Egy járathoz tartozik egy busz, az első indulás időpontja, az utolsó indulás időpontja, a további idulások ideje (a következő azonos járatok hány perc múlva indulnak az első indulási időpont után), a járat megállóinak listája és a megállókból való indulás időpontja. A megállók, illetve megállókból való indulások listája az oda és visszautat is tartalmaznia kell, tehát a második megállónak kell lennie az utolsónak is.
-
 ### Parancsok felsorolása (segitseg)
 
 Felsorolja a parancsokat.
+
+### Megállók beolvasása (mbeolvas)
+
+Paraméterek:
+- fajl_nev : fájl neve
+
+A megadott fájl alapján beolvassa a megállókat, illetve melyik megállóból hova lehet átszállni.
+Egy szöveges fájlt kell megadni (.txt kiterjesztés), ami a következőképpen épül fel:
+
+megálló neve, további megállók
+
+```
+megallo1 megallo2,megallo3,megallo4
+megallo3 megallo1,megallo4,megallo5
+```
+
+Ahol a főmegálló szöközzel van elválasztva az azt követő listától, illetve a lista elemei vesszővel egymástól.
 
 ### Járatok beolvasása (beolvas)
 
 Paraméterek:
 - fajl_nev : fájl neve
 
-A megadott fájl alapján a program beolvassa a megadott járatokat és elmenti további használatra. Ezeket a járatok minden nap fognak közlekedni.
+A megadott fájl alapján beolvassa a megadott járatokat és elmenti további használatra. Ezeket a járatok minden nap fognak közlekedni.
 A felhasználónak egy szöveges fájlba (.txt kiterjesztés) kell összegyűjtenie a járatok adatait. Egy rész a következőképpen áll össze:
 
 járat száma, első indulás, utolsó indulás, további indulások

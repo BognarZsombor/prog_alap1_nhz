@@ -8,6 +8,11 @@ typedef struct {
 } Ido;
 
 typedef struct {
+    char *nev;
+    char **megallok;
+} Megallo;
+
+typedef struct {
     char *busz;
     Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
     char **megallok;
@@ -85,7 +90,6 @@ int main() {
         printf("Parancs(max 100 karakter):");
         if (fgets(sor, 101, stdin) == NULL) {
             printf("Hiba a sor beolvasása közben.");
-            return -1;
         }
         char **parancssor = sor_to_list(sor);
         switch (str_to_parancs(parancssor[0])) {
