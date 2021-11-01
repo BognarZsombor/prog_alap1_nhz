@@ -63,7 +63,7 @@ Felsorolja a parancsokat.
 ### Megállók beolvasása (mbeolvas)
 
 Paraméterek:
-- fajl_nev : fájl neve
+- fajl : fájl neve
 
 A megadott fájl alapján beolvassa a megállókat, illetve melyik megállóból hova lehet átszállni.
 Egy szöveges fájlt kell megadni (.txt kiterjesztés), ami a következőképpen épül fel:
@@ -80,7 +80,7 @@ Ahol a főmegálló szöközzel van elválasztva az azt követő listától, ill
 ### Járatok beolvasása (beolvas)
 
 Paraméterek:
-- fajl_nev : fájl neve
+- fajl : fájl neve
 
 A megadott fájl alapján beolvassa a megadott járatokat és elmenti további használatra. Ezeket a járatok minden nap fognak közlekedni.
 A felhasználónak egy szöveges fájlba (.txt kiterjesztés) kell összegyűjtenie a járatok adatait. Egy rész a következőképpen áll össze:
@@ -121,7 +121,7 @@ Következő sor (utazási időpontok):
 ### Járatok kiírása (kiiras)
 
 Paraméterek:
-- fajl_nev : fájl neve
+- fajl : fájl neve
 
 Az eddig beolvasott és elmentett buszjáratokat kiírja a konzolra és paraméter megadásával egy fájlba, a beolvasással azonos formátumban. A programnak megadott fálj, ha nem található, létrehozásra kerül. Az adatok soronként a beolvasásnál leírt fájlal megegyező formátumú. Ezeket a fáljokat később lehet használni járatok beolvasására.
 
@@ -142,7 +142,7 @@ Egy megálló menetrendjét írja ki az adott napon.
 Paraméterek:
 - start : induló megálló neve
 - cel : célmegálló neve
-- fajl_nev : fájl neve
+- fajl : fájl neve
 
 Megadunk a programnak egy kezdő és egy cél megállót nevekkel, opcionális paraméterként pedig egy fájlnevet. Eredményként kapunk egy útvonaltervet átszállásokkal, időpontokkal kiírva a konzolra, illetve ha meg volt adva fájl, ennek a végére kiírja az útvonaltervet, szükség esetén létrehozza a fájlt.
 

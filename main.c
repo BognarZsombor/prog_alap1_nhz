@@ -19,7 +19,7 @@ typedef struct {
     Ido *idopontok;
 } Jarat;
 
-typedef enum {segitseg, beolvas, kiir, mentes, megallo, utvonal, kilep, hibas} parancsok;
+typedef enum {segitseg, mbeolvas, beolvas, kiir, mentes, megallo, utvonal, kilep, hibas} parancsok;
 
 /* str_to_parancs
  * A beérkető string alapján visszaadja a hozzátartozó parancsot
@@ -29,6 +29,8 @@ typedef enum {segitseg, beolvas, kiir, mentes, megallo, utvonal, kilep, hibas} p
 int str_to_parancs(char *parancs) {
     if (strcmp(parancs, "segitseg") == 0)
         return segitseg;
+    if (strcmp(parancs, "mbeolvas") == 0)
+        return mbeolvas;
     else if (strcmp(parancs, "beolvas") == 0)
         return beolvas;
     else if (strcmp(parancs, "kiir") == 0)
@@ -83,7 +85,59 @@ char **sor_to_list(char sor[]) {
     return temp_sor;
 }
 
+/* beolvas_kezdo_m
+ * A program indulásánal, ha létezik alap fájl, beolvassa belőle az alap megállókat.
+ * */
+Megallo *beolvas_kezdo_m(char *fajl) {
+    FILE *fp = fopen(fajl, "r");
+    if (!fp) {
+        //fájl nem létezik
+        fclose(fp);
+        return NULL;
+    }
+
+    int meret = 1;
+    Megallo *megallok = (Megallo*) malloc(meret * sizeof(Megallo));
+
+    int c;
+    do {
+        // főmegálló beolvasása
+        int i = 0;
+        Megallo m;
+        m.nev = (char*) malloc(51 * sizeof(char));
+        do {
+            c = getc(fp);
+            m.nev[i++] = c;
+        } while (c != ' ' && c != '\n' && c != EOF);
+        m.nev[i - 1] = '\0';
+
+        // további megállók beolvasása
+        i = 0;
+        do {
+            int j = 0;
+            m.megallok[i] = (char*) malloc(51 * sizeof(char));
+            do {
+                c = getc(fp);
+                m.megallok[i][j++] = c;
+            } while (c != ',' && c != '\n' && c != EOF);
+            m.megallok[i][j - 1] = '\0';
+            i++;
+        } while (c != '\n' && c != EOF);
+
+        //megálló mentése a listába
+        megallok = (Megallo*) realloc(megallok, meret * sizeof(Megallo));
+        megallok[meret - 1] = m;
+        meret++;
+    } while (c != EOF);
+
+    fclose(fp);
+    return megallok;
+}
+
 int main() {
+    //alap fájlok beolvasása ha léteznek
+    beolvas_kezdo_m("megallok.txt");
+
     bool futas = true;
     char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)
     while (futas) {
@@ -95,6 +149,8 @@ int main() {
         switch (str_to_parancs(parancssor[0])) {
             case segitseg:
                 printf("Parancsok: segitseg, beolvas, kiir, mentes, megallo, utvonal, kilep\n");
+                break;
+            case mbeolvas:
                 break;
             case beolvas:
                 break;
