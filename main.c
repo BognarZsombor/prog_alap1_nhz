@@ -13,7 +13,7 @@ typedef struct {
 } Megallo;
 
 typedef struct {
-    char *busz;
+    char *nev;
     Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
     char **megallok;
     Ido *idopontok;
@@ -92,7 +92,7 @@ char **sor_to_list(char sor[]) {
  * @param char* szo_vege Azt jelzi, hogy mivel végződött a string (valaszto, \n, EOF)
  * @return char* A beolvasott string
  * */
-char *kov_szo(char valaszto, FILE *fajl, char *szo_vege) {
+char *kov_szo(char valaszto, FILE *fajl, int *szo_vege) {
     int meret = 0;
     char *szo = (char*) malloc(meret * sizeof(char));
 
@@ -104,9 +104,17 @@ char *kov_szo(char valaszto, FILE *fajl, char *szo_vege) {
         szo[meret-1] = c;
     } while (c != valaszto && c != '\n' && c != EOF);
 
-    szo_vege = c;
-    szo[meret-1] = '\0';
+    if (szo_vege != NULL) {
+        szo_vege = c;
+        szo[meret-1] = '\0';
+    }
     return szo;
+}
+
+Ido str_to_ido(char *str) {
+    Ido ido;
+    sscanf(str, "%d:%d", &ido.ora, &ido.perc);
+    return ido;
 }
 
 /* beolvas_m_fg
@@ -117,7 +125,7 @@ char *kov_szo(char valaszto, FILE *fajl, char *szo_vege) {
 Megallo *beolvas_m_fg(FILE *fajl) {
     int m_meret = 0;
     Megallo *megallok = (Megallo*) malloc(m_meret * sizeof(Megallo));
-    char szo_vege;
+    int szo_vege;
 
     do {
         // főmegálló beolvasása
@@ -146,12 +154,20 @@ Megallo *beolvas_m_fg(FILE *fajl) {
 
 /* beolvas_fg
  * Beolvassa a megadott fájlból a járatokat.
+ * @param FILE* fajl A fájl, amiből beolvassa a járatokat
+ * @return Jarat* Járatok listája
  * */
 Jarat *beolvas_fg(FILE *fajl) {
     int meret = 1;
     Jarat *jaratok = (Jarat*) malloc(meret * sizeof(Jarat));
+    int szo_vege;
 
-    int c;
+    do {
+        Jarat j;
+        j.nev = kov_szo(' ', fajl, &szo_vege);
+        j.elso_indulas = str_to_ido(kov_szo(' ', fajl, &szo_vege));
+        j.utolso_indulas = kov_szo(' ', fajl, &szo_vege);
+    } while (szo_vege != EOF);
 }
 
 int main() {
