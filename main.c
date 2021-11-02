@@ -105,7 +105,7 @@ char *kov_szo(char valaszto, FILE *fajl, int *szo_vege) {
     } while (c != valaszto && c != '\n' && c != EOF);
 
     if (szo_vege != NULL) {
-        szo_vege = c;
+        *szo_vege = c;
         szo[meret-1] = '\0';
     }
     return szo;
@@ -133,13 +133,13 @@ Megallo *beolvas_m_fg(FILE *fajl) {
         m.nev = kov_szo(',', fajl, &szo_vege);
 
         // további megállók beolvasása
-        int meret = 1;
+        int meret = 0;
         m.megallok = (char**) malloc(meret * sizeof(char*));
 
         do {
-            m.megallok[meret-1] = kov_szo(',', fajl, &szo_vege);
             meret++;
             m.megallok = (char**) realloc(m.megallok, meret * sizeof(char*));
+            m.megallok[meret-1] = kov_szo(',', fajl, &szo_vege);
         } while (szo_vege != '\n' && szo_vege != EOF);
 
         //megálló mentése a listába
@@ -158,15 +158,40 @@ Megallo *beolvas_m_fg(FILE *fajl) {
  * @return Jarat* Járatok listája
  * */
 Jarat *beolvas_fg(FILE *fajl) {
-    int meret = 1;
-    Jarat *jaratok = (Jarat*) malloc(meret * sizeof(Jarat));
+    int j_meret = 0;
+    Jarat *jaratok = (Jarat*) malloc(j_meret * sizeof(Jarat));
     int szo_vege;
 
     do {
+        // első sor adatai
         Jarat j;
         j.nev = kov_szo(' ', fajl, &szo_vege);
-        j.elso_indulas = str_to_ido(kov_szo(' ', fajl, &szo_vege));
-        j.utolso_indulas = kov_szo(' ', fajl, &szo_vege);
+        j.elso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
+        j.utolso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
+        j.tovabbi_indulasok = str_to_ido(kov_szo(' ', fajl, NULL));
+
+        // megállók adatai
+        int meret = 0;
+        j.megallok = (char**) malloc(meret * sizeof(char*));
+        do {
+            meret++;
+            j.megallok = (char**) realloc(j.megallok, meret * sizeof(char*));
+            j.megallok[meret-1] = kov_szo(',', fajl, &szo_vege);
+        } while (szo_vege != '\n');
+
+        // megállók indulásai
+        meret = 0;
+        j.idopontok = (Ido*) malloc(meret * sizeof(Ido));
+        do {
+            meret++;
+            j.idopontok = (Ido*) realloc(j.idopontok, meret * sizeof(Ido));
+            j.idopontok[meret-1] = str_to_ido(kov_szo(' ', fajl, &szo_vege));
+        } while (szo_vege != '\n');
+
+        // járatok növelése
+        j_meret++;
+        jaratok = (Jarat*) realloc(jaratok, j_meret * sizeof(Jarat));
+        jaratok[j_meret] = j;
     } while (szo_vege != EOF);
 }
 
