@@ -15,11 +15,45 @@ typedef struct {
 typedef struct {
     char *nev;
     Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
-    char **megallok;
+    Megallo *megallok;
     Ido *idopontok;
 } Jarat;
 
-typedef enum {segitseg, mbeolvas, beolvas, kiir, mentes, megallo, utvonal, kilep, hibas} parancsok;
+typedef struct {
+    Megallo *tomb;
+    int meret;
+} Megallo_tomb;
+
+typedef struct {
+    Jarat *tomb;
+    int meret;
+} Jarat_tomb;
+
+typedef enum {segitseg, mbeolvas, beolvas, mentes, kiir, megallo, utvonal, kilep, hibas} parancsok;
+
+void jarat_kiir(Jarat jarat) {
+    printf("név: %s, első indulás: %d:%d, utolsó indulás: %d:%d, további indulások: %d:%d\n", jarat.nev, jarat.elso_indulas.ora, jarat.elso_indulas.perc, jarat.utolso_indulas.ora, jarat.utolso_indulas.perc, jarat.tovabbi_indulasok.ora, jarat.tovabbi_indulasok.perc);
+}
+
+void megallo_kiir(Megallo megallo) {
+    printf("megálló teszt\n");
+}
+
+Jarat jarat_keres(Jarat_tomb jaratok, char *nev) {
+    for (int i = 0; i < jaratok.meret; ++i) {
+        if (strcmp(jaratok.tomb[i].nev, nev) == 0) {
+            return jaratok.tomb[i];
+        }
+    }
+}
+
+Megallo megallo_keres(Megallo_tomb megallok, char *nev) {
+    for (int i = 0; i < megallok.meret; ++i) {
+        if (strcmp(megallok.tomb[i].nev, nev) == 0) {
+            return megallok.tomb[i];
+        }
+    }
+}
 
 /* str_to_parancs
  * A beérkető string alapján visszaadja a hozzátartozó parancsot
@@ -52,7 +86,7 @@ int str_to_parancs(char *parancs) {
  * @param char* sor A beérkező string
  * @return char** A szóközött alapján szétszedett stringlista
  * */
-char **sor_to_list(char sor[]) {
+char **sor_to_list(char const sor[]) {
     //a sor eleji felesleges spacek kihagyása
     int k;
     for (k = 0; sor[k] == ' '; ++k) {
@@ -111,20 +145,26 @@ char *kov_szo(char valaszto, FILE *fajl, int *szo_vege) {
     return szo;
 }
 
+/* str_to_ido
+ * Egy stringet Ido formátumba alakít át. A stringnek hh:mm formátumban kell lennie.
+ * @param char* str Az átírandó string
+ * @return Ido A beolvasott Ido
+ * */
 Ido str_to_ido(char *str) {
     Ido ido;
     sscanf(str, "%d:%d", &ido.ora, &ido.perc);
     return ido;
 }
 
-/* beolvas_m_fg
+/* mbeolvas_fg
  * Beolvassa a megadott fájlból a megállókat.
  * @param FILE* fajl A fájl, amiből beolvassa a megállókat
- * @return Megallo* Megállók listája
+ * @return Megallo_tomb Megállók listájának structja
  * */
-Megallo *beolvas_m_fg(FILE *fajl) {
-    int m_meret = 0;
-    Megallo *megallok = (Megallo*) malloc(m_meret * sizeof(Megallo));
+Megallo_tomb mbeolvas_fg(FILE *fajl) {
+    Megallo_tomb megallok;
+    megallok.meret = 0;
+    megallok.tomb = (Megallo*) malloc(megallok.meret * sizeof(Megallo));
     int szo_vege;
 
     do {
@@ -143,9 +183,9 @@ Megallo *beolvas_m_fg(FILE *fajl) {
         } while (szo_vege != '\n' && szo_vege != EOF);
 
         //megálló mentése a listába
-        m_meret++;
-        megallok = (Megallo*) realloc(megallok, m_meret * sizeof(Megallo));
-        megallok[m_meret-1] = m;
+        megallok.meret++;
+        megallok.tomb = (Megallo*) realloc(megallok.tomb, megallok.meret * sizeof(Megallo));
+        megallok.tomb[megallok.meret-1] = m;
     } while (szo_vege != EOF);
 
     fclose(fajl);
@@ -155,11 +195,12 @@ Megallo *beolvas_m_fg(FILE *fajl) {
 /* beolvas_fg
  * Beolvassa a megadott fájlból a járatokat.
  * @param FILE* fajl A fájl, amiből beolvassa a járatokat
- * @return Jarat* Járatok listája
+ * @return Jarat_tomb Járatok listájának structja
  * */
-Jarat *beolvas_fg(FILE *fajl) {
-    int j_meret = 0;
-    Jarat *jaratok = (Jarat*) malloc(j_meret * sizeof(Jarat));
+Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
+    Jarat_tomb jaratok;
+    jaratok.tomb = 0;
+    jaratok.tomb = (Jarat*) malloc(jaratok.meret * sizeof(Jarat));
     int szo_vege;
 
     do {
@@ -172,11 +213,11 @@ Jarat *beolvas_fg(FILE *fajl) {
 
         // megállók adatai
         int meret = 0;
-        j.megallok = (char**) malloc(meret * sizeof(char*));
+        j.megallok = (Megallo*) malloc(meret * sizeof(Megallo));
         do {
             meret++;
-            j.megallok = (char**) realloc(j.megallok, meret * sizeof(char*));
-            j.megallok[meret-1] = kov_szo(',', fajl, &szo_vege);
+            j.megallok = (Megallo*) realloc(j.megallok, meret * sizeof(Megallo));
+            j.megallok[meret-1] = megallo_keres(megallok, kov_szo(',', fajl, &szo_vege));
         } while (szo_vege != '\n');
 
         // megállók indulásai
@@ -189,26 +230,74 @@ Jarat *beolvas_fg(FILE *fajl) {
         } while (szo_vege != '\n');
 
         // járatok növelése
-        j_meret++;
-        jaratok = (Jarat*) realloc(jaratok, j_meret * sizeof(Jarat));
-        jaratok[j_meret] = j;
+        jaratok.meret++;
+        jaratok.tomb = (Jarat*) realloc(jaratok.tomb, jaratok.meret * sizeof(Jarat));
+        jaratok.tomb[jaratok.meret-1] = j;
     } while (szo_vege != EOF);
+
+    return jaratok;
+}
+
+/* megallok_hozzaad
+ * @param Megallo_tomb megallok Amihez hozzáadjuk az új megállókat
+ * @param Megallo_tomb temp_megallok Amit hozzáadunk az eredeti megállókhozs
+ * */
+void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok) {
+    megallok.tomb = (Megallo*) realloc(megallok.tomb, (temp_megallok.meret + megallok.meret) * sizeof(Megallo));
+    for (int i = megallok.meret-1, j = 0; j < temp_megallok.meret; ++i, ++j) {
+        megallok.tomb[i] = temp_megallok.tomb[j];
+    }
+    megallok.meret += temp_megallok.meret;
+}
+
+/* jarat_hozzaad
+ * @param Jarat_tomb jaratok Amihez hozzáadjuk az új járatokat
+ * @param Jarat_tomb temp_jaratok Amit hozzáadunk az eredeti járatokhoz
+ * */
+void jarat_hozzaad(Jarat_tomb jaratok, Jarat_tomb temp_jaratok) {
+    jaratok.tomb = (Megallo*) realloc(jaratok.tomb, (temp_jaratok.meret + jaratok.meret) * sizeof(Megallo));
+    for (int i = jaratok.meret-1, j = 0; j < temp_jaratok.meret; ++i, ++j) {
+        jaratok.tomb[i] = temp_jaratok.tomb[j];
+    }
+    jaratok.meret += temp_jaratok.meret;
+}
+
+/* kiir_fg
+ * */
+void kiir_fg(Jarat_tomb jaratok, char *nev) {
+    for (int i = 0; i < jaratok.meret; ++i) {
+        if (strcmp(jaratok.tomb[i].nev, nev) == 0) {
+            jarat_kiir(jaratok.tomb[i]);
+        }
+    }
+}
+
+/* megallo_fg
+ * */
+void megallo_fg(Megallo_tomb megallok, char *nev) {
+    for (int i = 0; i < megallok.meret; ++i) {
+        if (strcmp(megallok.tomb[i].nev, nev) == 0) {
+            megallo_kiir(megallok.tomb[i]);
+        }
+    }
 }
 
 int main() {
     // megállók és járatok listája
-    Megallo *megallok;
-    Jarat *jaratok;
+    Jarat_tomb jaratok;
+    Megallo_tomb megallok;
 
     //alap fájlok beolvasása ha léteznek
     FILE *fajl = fopen("megallok.txt", "r");
     if (fajl) {
-        megallok = beolvas_m_fg(fajl);
+        megallok = mbeolvas_fg(fajl);
     }
+    fclose(fajl);
     fajl = fopen("jaratok.txt", "r");
     if (fajl) {
         jaratok = beolvas_fg(fajl);
     }
+    fclose(fajl);
 
     bool futas = true;
     char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)
@@ -223,14 +312,30 @@ int main() {
                 printf("Parancsok: segitseg, beolvas, kiir, mentes, megallo, utvonal, kilep\n");
                 break;
             case mbeolvas:
+                fajl = fopen(parancssor[1], "r");
+                Megallo_tomb temp_megallok;
+                if (fajl) {
+                    temp_megallok = mbeolvas_fg(fajl);
+                    megallok_hozzaad(megallok, temp_megallok);
+                }
+                fclose(fajl);
                 break;
             case beolvas:
-                break;
-            case kiir:
+                fajl = fopen(parancssor[1], "r");
+                Jarat_tomb temp_jaratok;
+                if (fajl) {
+                    temp_jaratok = beolvas_fg(fajl);
+                    jarat_hozzaad(jaratok, temp_jaratok);
+                }
+                fclose(fajl);
                 break;
             case mentes:
                 break;
+            case kiir:
+                kiir_fg(jaratok, parancssor[1]);
+                break;
             case megallo:
+                megallo_fg(megallok, parancssor[1]);
                 break;
             case utvonal:
                 break;
