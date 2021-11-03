@@ -45,9 +45,9 @@ A program menüvezérléssel működik.
     - segitseg (parancsok felsorolása)
     - mbeolvas (megállók beolvasása)
     - beolvas (járatok beolvasása)
-    - kiir (járatok kiírása)
+    - kiir (járat kiírása)
     - mentes (járatok mentése)
-    - megallo (megállók kiírása)
+    - megallo (megálló kiírása)
     - atszallas (hova lehet átszállni)
     - utvonal (útvonaltervezés)
     - kilep (kilépes a programból)
@@ -81,6 +81,7 @@ Ahol minden megálló vesszővel van elválasztva egymástól, így a megállók
 
 Paraméterek:
 - fajl : fájl neve
+- megallok : a megállók tömb, az adott megálló beolvasására
 
 A megadott fájl alapján beolvassa a megadott járatokat és elmenti további használatra. Ezeket a járatok minden nap fognak közlekedni.
 A felhasználónak egy szöveges fájlba (.txt kiterjesztés) kell összegyűjtenie a járatok adatait. Egy rész a következőképpen áll össze:
@@ -116,26 +117,28 @@ Következő sor (utazási időpontok):
 
 - Az időpontok, ahogy az egyes megállókból elindul az aktuális járat. 00:00-val kezdődik, ami a garázsból, illetve végállomásról való indulást jelenti.
 
-<div style="page-break-after: always;"></div>
+### Járatok mentése (mentes)
+
+Paraméterek:
+nincs
+
+A program indulásakor a fájljának mappájában megkeresi a **jaratok.txt** szöveges fájlt és ha létezik beolvassa belőle a járatokat, ezek rögtön indítás után elérhetőek lesznek. Ez a mentés nem történik meg a programból való kilépéskor, ezt a felhasználónak kell megtennie a **Járatok mentése** paranccsal. Ez is azonos formátumú a beolvasásnál leírt fájlokkal.
 
 ### Járatok kiírása (kiiras)
 
 Paraméterek:
-- fajl : fájl neve
+- jaratok : a lista, ahonnan a járatot ki kell keresni
+- nev : kiírandó járat neve
 
-Az eddig beolvasott és elmentett buszjáratokat kiírja a konzolra és paraméter megadásával egy fájlba, a beolvasással azonos formátumban. A programnak megadott fálj, ha nem található, létrehozásra kerül. Az adatok soronként a beolvasásnál leírt fájlal megegyező formátumú. Ezeket a fáljokat később lehet használni járatok beolvasására.
-
-### Járatok mentése (mentes)
-
-Nincs paramétere.
-A program indulásakor a fájljának mappájában megkeresi a **jaratok.txt** szöveges fájlt és ha létezik beolvassa belőle a járatokat, ezek rögtön indítás után elérhetőek lesznek. Ez a mentés nem történik meg a programból való kilépéskor, ezt a felhasználónak kell megtennie a **Járatok mentése** paranccsal. Ez is azonos formátumú a beolvasásnál leírt fájlokkal.
+Az adott járat adatait írja ki.
 
 ### Megállók kiírása (megallo)
 
 Paraméterek:
-- nev : melyik megálló menetrendjét kell kiírni
+- megallok : a lista, ahonnan a megállót ki kell keresni
+- nev : kiírandó megálló neve
 
-Egy megálló menetrendjét írja ki az adott napon.
+Az adott megálló menetrendjét írja ki.
 
 ### Útvonaltervezés (utvonal)
 
