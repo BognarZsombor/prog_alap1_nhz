@@ -94,9 +94,9 @@ int main() {
     bool futas = true;
     char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)
     while (futas) {
-        printf("Parancs(max 100 karakter):");
+        printf("\nParancs(max 100 karakter):");
         if (fgets(sor, 101, stdin) == NULL) {
-            printf("Hiba a sor beolvasása közben.");
+            printf("Hiba a sor beolvasasanal.");
         }
         char **parancssor = sor_to_list(sor);
         switch (str_to_parancs(parancssor[0])) {
@@ -144,7 +144,7 @@ int main() {
             case utvonal:
                 break;
             case kilep:
-                printf("Kilépés!\n");
+                printf("Kilepes!\n");
                 futas = false;
                 break;
             case hibas:

@@ -5,19 +5,20 @@
 #include "seged.h"
 
 void megallo_kiir(Megallo megallo) {
-    printf("név: %s\n", megallo.nev);
-    printf("átszállások: ");
+    printf("nev: %s\n", megallo.nev);
+    printf("atszallasok: ");
     for (int i = 0; i < megallo.meret; ++i) {
-        printf("m%d: %s,", i, megallo.nev);
+        printf("m%d: %s, ", i, megallo.nev);
     }
 }
 
-Megallo megallo_keres(Megallo_tomb megallok, char *nev) {
+Megallo *megallo_keres(Megallo_tomb megallok, char *nev) {
     for (int i = 0; i < megallok.meret; ++i) {
         if (strcmp(megallok.tomb[i].nev, nev) == 0) {
-            return megallok.tomb[i];
+            return &megallok.tomb[i];
         }
     }
+    return NULL;
 }
 
 Megallo_tomb mbeolvas_fg(FILE *fajl) {
@@ -60,10 +61,11 @@ void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok) {
 }
 
 void megallo_fg(Megallo_tomb megallok, char *nev) {
-    for (int i = 0; i < megallok.meret; ++i) {
-        if (strcmp(megallok.tomb[i].nev, nev) == 0) {
-            megallo_kiir(megallok.tomb[i]);
-        }
+    Megallo *temp_m = megallo_keres(megallok, nev);
+    if (temp_m == NULL) {
+        printf("Nincs ilyen megallo.");
+    } else {
+        megallo_kiir(*temp_m);
     }
 }
 

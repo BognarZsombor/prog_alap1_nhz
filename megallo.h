@@ -22,9 +22,9 @@ void megallo_kiir(Megallo megallo);
  * Megkeres egy megállót a megadott tömbön, a neve alapján.
  * @param Megallo_tomb megallok A tömb, amin keresni kell.
  * @param char* nev A keresett megálló neve
- * @return Megallo A megtalált megálló
+ * @return Megallo A megtalált megálló pointere
  * */
-Megallo megallo_keres(Megallo_tomb megallok, char *nev);
+Megallo *megallo_keres(Megallo_tomb megallok, char *nev);
 
 /* mbeolvas_fg
  * Beolvassa a megadott fájlból a megállókat.

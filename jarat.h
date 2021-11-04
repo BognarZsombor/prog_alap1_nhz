@@ -27,9 +27,9 @@ void jarat_kiir(Jarat jarat);
  * Megkeres egy járatot a megadott tömbön, a neve alapján.
  * @param Jarat_tomb jaratok A tömb, amin keresni kell.
  * @param char* nev A keresett járat neve
- * @return Jarat A megtalált járat
+ * @return Jarat* A megtalált járat pointere
  * */
-Jarat jarat_keres(Jarat_tomb jaratok, char *nev);
+Jarat *jarat_keres(Jarat_tomb jaratok, char *nev);
 
 /* beolvas_fg
  * Beolvassa a megadott fájlból a járatokat.
