@@ -10,6 +10,7 @@ typedef struct {
 typedef struct {
     char *nev;
     char **megallok;
+    int meret;
 } Megallo;
 
 typedef struct {
@@ -17,6 +18,7 @@ typedef struct {
     Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
     Megallo *megallok;
     Ido *idopontok;
+    int meret;
 } Jarat;
 
 typedef struct {
@@ -29,16 +31,46 @@ typedef struct {
     int meret;
 } Jarat_tomb;
 
-typedef enum {segitseg, mbeolvas, beolvas, mentes, kiir, megallo, utvonal, kilep, hibas} parancsok;
+typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, kiir, megallo, utvonal, kilep, hibas} parancsok;
 
+/* jarat_kiir
+ * Kiirja a megadott járat adatait.
+ * @param Jarat jarat A kiirandó járat
+ * */
 void jarat_kiir(Jarat jarat) {
     printf("név: %s, első indulás: %d:%d, utolsó indulás: %d:%d, további indulások: %d:%d\n", jarat.nev, jarat.elso_indulas.ora, jarat.elso_indulas.perc, jarat.utolso_indulas.ora, jarat.utolso_indulas.perc, jarat.tovabbi_indulasok.ora, jarat.tovabbi_indulasok.perc);
+
+    printf("megállók: ");
+    for (int i = 0; i < jarat.meret; ++i) {
+        printf("m%d: %s,", i, jarat.megallok[i].nev);
+    }
+    printf("\n");
+
+    printf("időpontok: ");
+    for (int i = 0; i < jarat.meret; ++i) {
+        printf("i%d: %d:%d,", i, jarat.idopontok[i].ora, jarat.idopontok[i].perc);
+    }
+    printf("\n");
 }
 
+/* megallo_kiir
+ * Kiirja a megadott járat adatait.
+ * @param Megallo megallo A kiirandó megálló
+ * */
 void megallo_kiir(Megallo megallo) {
-    printf("megálló teszt\n");
+    printf("név: %s\n", megallo.nev);
+    printf("átszállások: ");
+    for (int i = 0; i < megallo.meret; ++i) {
+        printf("m%d: %s,", i, megallo.nev);
+    }
 }
 
+/* jarat_keres
+ * Megkeres egy járatot a megadott tömbön, a neve alapján.
+ * @param Jarat_tomb jaratok A tömb, amin keresni kell.
+ * @param char* nev A keresett járat neve
+ * @return Jarat A megtalált járat
+ * */
 Jarat jarat_keres(Jarat_tomb jaratok, char *nev) {
     for (int i = 0; i < jaratok.meret; ++i) {
         if (strcmp(jaratok.tomb[i].nev, nev) == 0) {
@@ -47,6 +79,12 @@ Jarat jarat_keres(Jarat_tomb jaratok, char *nev) {
     }
 }
 
+/* megallo_keres
+ * Megkeres egy megállót a megadott tömbön, a neve alapján.
+ * @param Megallo_tomb megallok A tömb, amin keresni kell.
+ * @param char* nev A keresett megálló neve
+ * @return Megallo A megtalált megálló
+ * */
 Megallo megallo_keres(Megallo_tomb megallok, char *nev) {
     for (int i = 0; i < megallok.meret; ++i) {
         if (strcmp(megallok.tomb[i].nev, nev) == 0) {
@@ -71,6 +109,8 @@ int str_to_parancs(char *parancs) {
         return kiir;
     else if (strcmp(parancs, "mentes") == 0)
         return mentes;
+    else if (strcmp(parancs, "mmentes") == 0)
+        return mmentes;
     else if (strcmp(parancs, "megallo") == 0)
         return megallo;
     else if (strcmp(parancs, "utvonal") == 0)
@@ -171,15 +211,15 @@ Megallo_tomb mbeolvas_fg(FILE *fajl) {
         // főmegálló beolvasása
         Megallo m;
         m.nev = kov_szo(',', fajl, &szo_vege);
+        m.meret = 0;
 
         // további megállók beolvasása
-        int meret = 0;
-        m.megallok = (char**) malloc(meret * sizeof(char*));
+        m.megallok = (char**) malloc(m.meret * sizeof(char*));
 
         do {
-            meret++;
-            m.megallok = (char**) realloc(m.megallok, meret * sizeof(char*));
-            m.megallok[meret-1] = kov_szo(',', fajl, &szo_vege);
+            m.meret++;
+            m.megallok = (char**) realloc(m.megallok, m.meret * sizeof(char*));
+            m.megallok[m.meret-1] = kov_szo(',', fajl, &szo_vege);
         } while (szo_vege != '\n' && szo_vege != EOF);
 
         //megálló mentése a listába
@@ -210,24 +250,21 @@ Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
         j.elso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
         j.utolso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
         j.tovabbi_indulasok = str_to_ido(kov_szo(' ', fajl, NULL));
+        j.meret = 0;
 
         // megállók adatai
-        int meret = 0;
-        j.megallok = (Megallo*) malloc(meret * sizeof(Megallo));
+        j.megallok = (Megallo*) malloc(j.meret * sizeof(Megallo));
         do {
-            meret++;
-            j.megallok = (Megallo*) realloc(j.megallok, meret * sizeof(Megallo));
-            j.megallok[meret-1] = megallo_keres(megallok, kov_szo(',', fajl, &szo_vege));
+            j.meret++;
+            j.megallok = (Megallo*) realloc(j.megallok, j.meret * sizeof(Megallo));
+            j.megallok[j.meret-1] = megallo_keres(megallok, kov_szo(',', fajl, &szo_vege));
         } while (szo_vege != '\n');
 
         // megállók indulásai
-        meret = 0;
-        j.idopontok = (Ido*) malloc(meret * sizeof(Ido));
-        do {
-            meret++;
-            j.idopontok = (Ido*) realloc(j.idopontok, meret * sizeof(Ido));
-            j.idopontok[meret-1] = str_to_ido(kov_szo(' ', fajl, &szo_vege));
-        } while (szo_vege != '\n');
+        j.idopontok = (Ido*) malloc(j.meret * sizeof(Ido));
+        for (int i = 0; i < j.meret; ++i) {
+            j.idopontok[i] = str_to_ido(kov_szo(' ', fajl, NULL));
+        }
 
         // járatok növelése
         jaratok.meret++;
@@ -239,6 +276,7 @@ Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
 }
 
 /* megallok_hozzaad
+ * Hozzáad egy megállótömbhöz egy másik megállótömböt
  * @param Megallo_tomb megallok Amihez hozzáadjuk az új megállókat
  * @param Megallo_tomb temp_megallok Amit hozzáadunk az eredeti megállókhozs
  * */
@@ -251,6 +289,7 @@ void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok) {
 }
 
 /* jarat_hozzaad
+ * Hozzáad egy járattömbhöz egy másik járattömböt
  * @param Jarat_tomb jaratok Amihez hozzáadjuk az új járatokat
  * @param Jarat_tomb temp_jaratok Amit hozzáadunk az eredeti járatokhoz
  * */
@@ -282,6 +321,14 @@ void megallo_fg(Megallo_tomb megallok, char *nev) {
     }
 }
 
+void mentes_fg(Jarat_tomb jaratok, FILE *fajl) {
+
+}
+
+void mmentes_fg(Megallo_tomb megallok, FILE *fajl) {
+
+}
+
 int main() {
     // megállók és járatok listája
     Jarat_tomb jaratok;
@@ -295,7 +342,7 @@ int main() {
     fclose(fajl);
     fajl = fopen("jaratok.txt", "r");
     if (fajl) {
-        jaratok = beolvas_fg(fajl);
+        jaratok = beolvas_fg(fajl, megallok);
     }
     fclose(fajl);
 
@@ -309,7 +356,7 @@ int main() {
         char **parancssor = sor_to_list(sor);
         switch (str_to_parancs(parancssor[0])) {
             case segitseg:
-                printf("Parancsok: segitseg, beolvas, kiir, mentes, megallo, utvonal, kilep\n");
+                printf("Parancsok: segitseg, mbeolvas, beolvas, mmentes, mentes, kiir, megallo, utvonal, kilep\n");
                 break;
             case mbeolvas:
                 fajl = fopen(parancssor[1], "r");
@@ -324,12 +371,24 @@ int main() {
                 fajl = fopen(parancssor[1], "r");
                 Jarat_tomb temp_jaratok;
                 if (fajl) {
-                    temp_jaratok = beolvas_fg(fajl);
+                    temp_jaratok = beolvas_fg(fajl, megallok);
                     jarat_hozzaad(jaratok, temp_jaratok);
                 }
                 fclose(fajl);
                 break;
             case mentes:
+                fajl = fopen(parancssor[1], "w");
+                if (fajl) {
+                    mentes_fg(jaratok, fajl);
+                    printf("Fájl elmentve!\n");
+                }
+                break;
+            case mmentes:
+                fajl = fopen(parancssor[1], "w");
+                if (fajl) {
+                    mmentes_fg(megallok, fajl);
+                    printf("Fájl elmentve!\n");
+                }
                 break;
             case kiir:
                 kiir_fg(jaratok, parancssor[1]);
