@@ -42,29 +42,33 @@ int str_to_parancs(char *parancs) {
  * @return char** A szóközött alapján szétszedett stringlista
  * */
 char **sor_to_list(char const sor[]) {
-    //a sor eleji felesleges spacek kihagyása
+    char elvalaszto = '-';
+
+    // a sor eleji felesleges spacek kihagyása
     int k;
     for (k = 0; sor[k] == ' '; ++k) {
         k++;
     }
 
+    // hány db elválasztó van a sor-ba -> hány paraméter lesz
     int spaces = 0;
     for (int i = k; sor[i] != '\n'; ++i) {
-        if (sor[i] == ' ') {
+        if (sor[i] == elvalaszto) {
             spaces++;
         }
     }
     char **temp_sor = (char**) malloc(spaces * sizeof(char*));
 
+    // sor szétválogatása
     spaces = 0;
-    temp_sor[0] = malloc(51 * sizeof(char));
+    temp_sor[0] = malloc(101 * sizeof(char));
     int j = 0;
     for (int i = k; sor[i] != '\n'; ++i) {
-        if (sor[i] == ' ') {
+        if (sor[i] == elvalaszto) {
             temp_sor[spaces][j] = '\0';
             spaces++;
             j = 0;
-            temp_sor[spaces] = malloc(51 * sizeof(char));
+            temp_sor[spaces] = malloc(101 * sizeof(char));
         } else {
             temp_sor[spaces][j++] = sor[i];
         }
@@ -72,6 +76,9 @@ char **sor_to_list(char const sor[]) {
     temp_sor[spaces][j] = '\0';
 
     return temp_sor;
+}
+
+void utvonal_fg(Megallo_tomb megallok, Jarat_tomb jaratok, char *k, char *v, char *ora) {
 }
 
 int main() {
@@ -109,6 +116,7 @@ int main() {
                 if (fajl) {
                     temp_megallok = mbeolvas_fg(fajl);
                     megallok_hozzaad(megallok, temp_megallok);
+                    free(temp_megallok.tomb);
                 }
                 fclose(fajl);
                 break;
@@ -118,6 +126,7 @@ int main() {
                 if (fajl) {
                     temp_jaratok = beolvas_fg(fajl, megallok);
                     jarat_hozzaad(jaratok, temp_jaratok);
+                    free(temp_jaratok.tomb);
                 }
                 fclose(fajl);
                 break;
@@ -142,9 +151,12 @@ int main() {
                 megallo_fg(megallok, parancssor[1]);
                 break;
             case utvonal:
+                utvonal_fg(megallok, jaratok, parancssor[1], parancssor[2], parancssor[3]);
                 break;
             case kilep:
                 printf("Kilepes!\n");
+                free(jaratok.tomb);
+                free(megallok.tomb);
                 futas = false;
                 break;
             case hibas:

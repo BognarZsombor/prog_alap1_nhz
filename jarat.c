@@ -50,7 +50,7 @@ Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
         do {
             j.meret++;
             j.megallok = (Megallo*) realloc(j.megallok, j.meret * sizeof(Megallo));
-            Megallo *temp_m = megallo_keres(megallok, kov_szo(',', fajl, &szo_vege);
+            Megallo *temp_m = megallo_keres(megallok, kov_szo(',', fajl, &szo_vege));
             if (temp_m != NULL) {
                 j.megallok[j.meret-1] = *temp_m;
             }

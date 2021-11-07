@@ -54,7 +54,7 @@ A program menüvezérléssel működik.
 
 ### Parancsok indítása, paraméterezése
 
-Parancsot indítani a konzolon való futtatásával lehet, ezután kell a kötelező, illetve opcionális paramétereket szóközzel elválasztva megadni. Egy paraméteren belül nem lehet szóköz.
+Parancsot indítani a konzolon való futtatásával lehet, ezután kell a kötelező, illetve opcionális paramétereket kötőjellel elválasztva megadni. Így a paramétereken belül is lehet szóköz.
 
 ### Parancsok felsorolása (segitseg)
 
