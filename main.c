@@ -6,6 +6,13 @@
 #include "megallo.h"
 #include "jarat.h"
 
+typedef struct {
+    Megallo *megallok;
+    Ido *idopontok;
+    Jarat *jaratok;
+    int meret;
+} Utvonal_tomb;
+
 typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, kiir, megallo, utvonal, kilep, hibas} parancsok;
 
 /* str_to_parancs
@@ -78,7 +85,25 @@ char **sor_to_list(char const sor[]) {
     return temp_sor;
 }
 
+Utvonal_tomb utvonal_seged_fg(Megallo_tomb megallok, Jarat_tomb jaratok, Megallo m1, Megallo m2) {
+    if (strcmp(m1.nev, m2.nev) == 0) {
+
+    } else {
+
+    }
+}
+
 void utvonal_fg(Megallo_tomb megallok, Jarat_tomb jaratok, char *k, char *v, char *ora) {
+    if (megallo_keres(megallok, k) == NULL || megallo_keres(megallok, v) == NULL) {
+        printf("Nincsenek ilyen megállók!");
+        return;
+    }
+    Megallo m1 = *megallo_keres(megallok, k);
+    Megallo m2 = *megallo_keres(megallok, v);
+    Ido ido = str_to_ido(ora);
+    Utvonal_tomb utvonal;
+
+    utvonal = utvonal_seged_fg(megallok, jaratok, m1, m2);
 }
 
 int main() {

@@ -8,7 +8,7 @@ void megallo_kiir(Megallo megallo) {
     printf("nev: %s\n", megallo.nev);
     printf("atszallasok: ");
     for (int i = 0; i < megallo.meret; ++i) {
-        printf("m%d: %s, ", i, megallo.nev);
+        printf("m%d: %s, ", i, megallo.megallok[i]);
     }
 }
 
