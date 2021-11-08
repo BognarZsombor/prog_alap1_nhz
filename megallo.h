@@ -1,9 +1,11 @@
 #ifndef MAIN_C_MEGALLO_H
 #define MAIN_C_MEGALLO_H
 
+#include "ido.h"
+
 typedef struct {
     char *nev;
-    char **megallok;
+    char **atszallasok;
     int meret;
 } Megallo;
 

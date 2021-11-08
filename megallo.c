@@ -8,7 +8,7 @@ void megallo_kiir(Megallo megallo) {
     printf("nev: %s\n", megallo.nev);
     printf("atszallasok: ");
     for (int i = 0; i < megallo.meret; ++i) {
-        printf("m%d: %s, ", i, megallo.megallok[i]);
+        printf("m%d: %s, ", i, megallo.atszallasok[i]);
     }
 }
 
@@ -34,12 +34,12 @@ Megallo_tomb mbeolvas_fg(FILE *fajl) {
         m.meret = 0;
 
         // további megállók beolvasása
-        m.megallok = (char**) malloc(m.meret * sizeof(char*));
+        m.atszallasok = (char**) malloc(m.meret * sizeof(char*));
 
         do {
             m.meret++;
-            m.megallok = (char**) realloc(m.megallok, m.meret * sizeof(char*));
-            m.megallok[m.meret-1] = kov_szo(',', fajl, &szo_vege);
+            m.atszallasok = (char**) realloc(m.atszallasok, m.meret * sizeof(char*));
+            m.atszallasok[m.meret-1] = kov_szo(',', fajl, &szo_vege);
         } while (szo_vege != '\n' && szo_vege != EOF);
 
         //megálló mentése a listába

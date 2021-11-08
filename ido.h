@@ -5,6 +5,10 @@ typedef struct {
     int ora, perc;
 } Ido;
 
+typedef struct {
+    Ido *tomb;
+    int meret;
+} Ido_tomb;
 
 /* str_to_ido
  * Egy stringet Ido formátumba alakít át. A stringnek hh:mm formátumban kell lennie.

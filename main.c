@@ -6,10 +6,19 @@
 #include "megallo.h"
 #include "jarat.h"
 
+/* Tevékenységlista: mindig van idopont és megálló.
+ * Ha átszállás történt az adott megállóból a következőbe, akkor a járat NULL
+ * Az idopont utolsó eleme mindig az aktuális utazásiidő
+ * */
 typedef struct {
     Megallo *megallok;
-    Ido *idopontok;
     Jarat *jaratok;
+    Ido *idopontok;
+    int meret;
+} Utvonal;
+
+typedef struct {
+    Utvonal *tomb;
     int meret;
 } Utvonal_tomb;
 
@@ -85,11 +94,29 @@ char **sor_to_list(char const sor[]) {
     return temp_sor;
 }
 
-Utvonal_tomb utvonal_seged_fg(Megallo_tomb megallok, Jarat_tomb jaratok, Megallo m1, Megallo m2) {
+/* utvonal_seged_fg
+ * Az utvonalban van tárolva, hogy hol tartunk utazási időben. Az aktuális útvonal az utvonalban van tárolva.
+ * Az összes útvonal az utvonalakban van tárolva.
+ * */
+void utvonal_seged_fg(Megallo_tomb megallok, Jarat_tomb jaratok, Megallo m1, Megallo m2, Ido *indulasi_ido, Utvonal_tomb *utvonalak, Utvonal *utvonal) {
     if (strcmp(m1.nev, m2.nev) == 0) {
-
+        // hozzáadás a kész útvonalakhoz
+        utvonalak->meret++;
+        utvonalak->tomb = (Utvonal*) realloc(utvonalak->tomb, utvonalak->meret * sizeof(Utvonal));
+        utvonalak->tomb[utvonalak->meret-1] = *utvonal;
     } else {
-
+        // átszállás
+        utvonal->m_meret++;
+        utvonal->megallok = (Megallo*) realloc(utvonal->megallok, utvonal->m_meret * sizeof )
+        for (int i = 0; i < m1.meret; ++i) {
+            utvonal
+        }
+        // járat következő megállója
+        for (int i = 0; i < jaratok.meret; ++i) {
+            for (int j = 0; j < jaratok.tomb[i].meret; ++j) {
+                
+            }
+        }
     }
 }
 
@@ -100,10 +127,9 @@ void utvonal_fg(Megallo_tomb megallok, Jarat_tomb jaratok, char *k, char *v, cha
     }
     Megallo m1 = *megallo_keres(megallok, k);
     Megallo m2 = *megallo_keres(megallok, v);
-    Ido ido = str_to_ido(ora);
-    Utvonal_tomb utvonal;
+    Ido indulasi_ido = str_to_ido(ora);
 
-    utvonal = utvonal_seged_fg(megallok, jaratok, m1, m2);
+    utvonal_seged_fg(megallok, jaratok, m1, m2, &indulasi_ido);
 }
 
 int main() {
