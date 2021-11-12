@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "jarat.h"
+#include "megallo.h"
 #include "seged.h"
 
 void jarat_kiir(Jarat jarat) {

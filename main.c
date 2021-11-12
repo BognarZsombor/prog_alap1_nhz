@@ -99,7 +99,7 @@ char **sor_to_list(char const sor[]) {
  * Az összes útvonal az utvonalakban van tárolva.
  * */
 void utvonal_seged_fg(Megallo_tomb megallok, Jarat_tomb jaratok, Megallo m1, Megallo m2, Ido *indulasi_ido, Utvonal_tomb *utvonalak, Utvonal *utvonal) {
-    if (strcmp(m1.nev, m2.nev) == 0) {
+    /*if (strcmp(m1.nev, m2.nev) == 0) {
         // hozzáadás a kész útvonalakhoz
         utvonalak->meret++;
         utvonalak->tomb = (Utvonal*) realloc(utvonalak->tomb, utvonalak->meret * sizeof(Utvonal));
@@ -117,11 +117,11 @@ void utvonal_seged_fg(Megallo_tomb megallok, Jarat_tomb jaratok, Megallo m1, Meg
                 
             }
         }
-    }
+    }*/
 }
 
 void utvonal_fg(Megallo_tomb megallok, Jarat_tomb jaratok, char *k, char *v, char *ora) {
-    if (megallo_keres(megallok, k) == NULL || megallo_keres(megallok, v) == NULL) {
+    /*if (megallo_keres(megallok, k) == NULL || megallo_keres(megallok, v) == NULL) {
         printf("Nincsenek ilyen megállók!");
         return;
     }
@@ -129,7 +129,7 @@ void utvonal_fg(Megallo_tomb megallok, Jarat_tomb jaratok, char *k, char *v, cha
     Megallo m2 = *megallo_keres(megallok, v);
     Ido indulasi_ido = str_to_ido(ora);
 
-    utvonal_seged_fg(megallok, jaratok, m1, m2, &indulasi_ido);
+    utvonal_seged_fg(megallok, jaratok, m1, m2, &indulasi_ido);*/
 }
 
 int main() {
@@ -199,7 +199,7 @@ int main() {
                 kiir_fg(jaratok, parancssor[1]);
                 break;
             case megallo:
-                megallo_fg(megallok, parancssor[1]);
+                megallo_fg(jaratok, megallok, parancssor[1]);
                 break;
             case utvonal:
                 utvonal_fg(megallok, jaratok, parancssor[1], parancssor[2], parancssor[3]);

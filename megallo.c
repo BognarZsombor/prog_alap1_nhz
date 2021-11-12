@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "megallo.h"
 #include "seged.h"
 
@@ -60,12 +61,32 @@ void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok) {
     megallok.meret += temp_megallok.meret;
 }
 
-void megallo_fg(Megallo_tomb megallok, char *nev) {
+void megallo_fg(Jarat_tomb jaratok, Megallo_tomb megallok, char *nev) {
     Megallo *temp_m = megallo_keres(megallok, nev);
     if (temp_m == NULL) {
         printf("Nincs ilyen megallo.");
-    } else {
-        megallo_kiir(*temp_m);
+        return;
+    }
+    megallo_kiir(*temp_m);
+    for (int i = 0; i < jaratok.meret; ++i) {
+        bool oda = true;
+        for (int j = 0; j < jaratok.tomb[i].meret; ++j) {
+            if (strcmp(jaratok.tomb[i].megallok[j].nev, temp_m->nev) == 0) {
+                if (oda) {
+                    printf("\njarat: %s\n", jaratok.tomb[i].nev);
+                    oda = false;
+                } else {
+                    printf("\n");
+                }
+                /* ki kell számolni először mikor ér a megállóba
+                 * utána ezt kiirni tovabbbi_indulasok időnként
+                 * */
+                Ido elso_erkezes = ido_osszead(jaratok.tomb[i].elso_indulas, jaratok.tomb[i].idopontok[j]);
+                for (Ido k = elso_erkezes; ido_cmp(k, jaratok.tomb[i].utolso_indulas) < 0; k = ido_osszead(k, jaratok.tomb[i].tovabbi_indulasok)) {
+                    printf("idopont: %d:%d\n", k.ora, k.perc);
+                }
+            }
+        }
     }
 }
 

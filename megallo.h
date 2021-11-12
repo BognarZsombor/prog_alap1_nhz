@@ -2,17 +2,7 @@
 #define MAIN_C_MEGALLO_H
 
 #include "ido.h"
-
-typedef struct {
-    char *nev;
-    char **atszallasok;
-    int meret;
-} Megallo;
-
-typedef struct {
-    Megallo *tomb;
-    int meret;
-} Megallo_tomb;
+#include "structok.h"
 
 /* megallo_kiir
  * Kiirja a megadott járat adatait.
@@ -44,7 +34,7 @@ void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok);
 
 /* megallo_fg
  * */
-void megallo_fg(Megallo_tomb megallok, char *nev);
+void megallo_fg(Jarat_tomb jaratok, Megallo_tomb megallok, char *nev);
 
 /* mmentes_fg
  * */
