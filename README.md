@@ -42,6 +42,7 @@ A program menüvezérléssel működik.
 - A felhasználó a felsorolt menüpontok közül a parancs beírásával tud választani.
 - Ezután írhatók az egyes parancsok paraméterei.
 - 8 parancs közül lehet választani:
+    - up (előző parancs futtatása)
     - segitseg (parancsok felsorolása)
     - mbeolvas (megállók beolvasása)
     - beolvas (járatok beolvasása)
@@ -54,7 +55,12 @@ A program menüvezérléssel működik.
 
 ### Parancsok indítása, paraméterezése
 
-Parancsot indítani a konzolon való futtatásával lehet, ezután kell a kötelező, illetve opcionális paramétereket kötőjellel elválasztva megadni. Így a paramétereken belül is lehet szóköz.
+Parancsot indítani a konzolon való futtatásával lehet, ezután kell a kötelező, illetve opcionális paramétereket kötőjellel elválasztva megadni, így a paramétereken belül is lehet szóköz.
+A parancsban és a paramétereken belül nem lehet magában -1-et megadni.
+
+### Előző parancs futtatása (up)
+
+Ha volt már futtatva parancs, lefuttatja azt. Előtte kiírja mi volt ez a parancs
 
 ### Parancsok felsorolása (segitseg)
 
@@ -122,7 +128,8 @@ Következő sor (utazási időpontok):
 Paraméterek:
 nincs
 
-A program indulásakor a fájljának mappájában megkeresi a **jaratok.txt** szöveges fájlt és ha létezik beolvassa belőle a járatokat, ezek rögtön indítás után elérhetőek lesznek. Ez a mentés nem történik meg a programból való kilépéskor, ezt a felhasználónak kell megtennie a **Járatok mentése** paranccsal. Ez is azonos formátumú a beolvasásnál leírt fájlokkal.
+A program indulásakor a fájljának mappájában megkeresi a **jaratok.txt** szöveges fájlt és ha létezik beolvassa belőle a járatokat, ezek rögtön indítás után elérhetőek lesznek.
+Ez a mentés nem történik meg a programból való kilépéskor, ezt a felhasználónak kell megtennie a **Járatok mentése** paranccsal. Ez is azonos formátumú a beolvasásnál leírt fájlokkal.
 
 ### Járatok kiírása (kiiras)
 
@@ -147,7 +154,8 @@ Paraméterek:
 - cel : célmegálló neve
 - fajl : fájl neve
 
-Megadunk a programnak egy kezdő és egy cél megállót nevekkel, opcionális paraméterként pedig egy fájlnevet. Eredményként kapunk egy útvonaltervet átszállásokkal, időpontokkal kiírva a konzolra, illetve ha meg volt adva fájl, ennek a végére kiírja az útvonaltervet, szükség esetén létrehozza a fájlt.
+Megadunk a programnak egy kezdő és egy cél megállót nevekkel, opcionális paraméterként pedig egy fájlnevet.
+Eredményként kapunk egy útvonaltervet átszállásokkal, időpontokkal kiírva a konzolra, illetve ha meg volt adva fájl, ennek a végére kiírja az útvonaltervet, szükség esetén létrehozza a fájlt.
 
 ### Kilépés (kilep)
 

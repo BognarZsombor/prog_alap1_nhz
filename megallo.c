@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "debugmalloc.h"
 #include "megallo.h"
 #include "seged.h"
 
@@ -19,6 +20,7 @@ Megallo *megallo_keres(Megallo_tomb megallok, char *nev) {
             return &megallok.tomb[i];
         }
     }
+    free(nev);
     return NULL;
 }
 
@@ -37,11 +39,11 @@ Megallo_tomb mbeolvas_fg(FILE *fajl) {
         // további megállók beolvasása
         m.atszallasok = (char**) malloc(m.meret * sizeof(char*));
 
-        do {
+        while (szo_vege != '\n' && szo_vege != EOF) {
             m.meret++;
             m.atszallasok = (char**) realloc(m.atszallasok, m.meret * sizeof(char*));
             m.atszallasok[m.meret-1] = kov_szo(',', fajl, &szo_vege);
-        } while (szo_vege != '\n' && szo_vege != EOF);
+        }
 
         //megálló mentése a listába
         megallok.meret++;
@@ -75,16 +77,9 @@ void megallo_fg(Jarat_tomb jaratok, Megallo_tomb megallok, char *nev) {
                 if (oda) {
                     printf("\njarat: %s\n", jaratok.tomb[i].nev);
                     oda = false;
-                } else {
-                    printf("\n");
                 }
-                /* ki kell számolni először mikor ér a megállóba
-                 * utána ezt kiirni tovabbbi_indulasok időnként
-                 * */
                 Ido elso_erkezes = ido_osszead(jaratok.tomb[i].elso_indulas, jaratok.tomb[i].idopontok[j]);
-                for (Ido k = elso_erkezes; ido_cmp(k, jaratok.tomb[i].utolso_indulas) < 0; k = ido_osszead(k, jaratok.tomb[i].tovabbi_indulasok)) {
-                    printf("idopont: %d:%d\n", k.ora, k.perc);
-                }
+                printf("elso erkezes: %02d:%02d, tovabbi erkezesek: %02d:%02d\n", elso_erkezes.ora, elso_erkezes.perc, jaratok.tomb[i].tovabbi_indulasok.ora, jaratok.tomb[i].tovabbi_indulasok.perc);
             }
         }
     }

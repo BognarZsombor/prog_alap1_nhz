@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "debugmalloc.h"
 #include "jarat.h"
 #include "megallo.h"
 #include "seged.h"
 
 void jarat_kiir(Jarat jarat) {
-    printf("nev: %s, elso indulas: %d:%d, utolso indulas: %d:%d, tovabbi indulasok: %d:%d\n", jarat.nev, jarat.elso_indulas.ora, jarat.elso_indulas.perc, jarat.utolso_indulas.ora, jarat.utolso_indulas.perc, jarat.tovabbi_indulasok.ora, jarat.tovabbi_indulasok.perc);
+    printf("nev: %s, elso indulas: %02d:%02d, utolso indulas: %02d:%02d, tovabbi indulasok: %02d:%02d\n", jarat.nev, jarat.elso_indulas.ora, jarat.elso_indulas.perc, jarat.utolso_indulas.ora, jarat.utolso_indulas.perc, jarat.tovabbi_indulasok.ora, jarat.tovabbi_indulasok.perc);
 
     printf("megallok: ");
     for (int i = 0; i < jarat.meret; ++i) {
@@ -16,7 +17,7 @@ void jarat_kiir(Jarat jarat) {
 
     printf("idopontok: ");
     for (int i = 0; i < jarat.meret; ++i) {
-        printf("i%d: %d:%d,", i, jarat.idopontok[i].ora, jarat.idopontok[i].perc);
+        printf("i%d: %02d:%02d,", i, jarat.idopontok[i].ora, jarat.idopontok[i].perc);
     }
     printf("\n");
 }
@@ -27,14 +28,15 @@ Jarat *jarat_keres(Jarat_tomb jaratok, char *nev) {
             return &jaratok.tomb[i];
         }
     }
+    free(nev);
     return NULL;
 }
 
 Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
     Jarat_tomb jaratok;
     jaratok.tomb = 0;
-    jaratok.tomb = (Jarat*) malloc(jaratok.meret * sizeof(Jarat));
     jaratok.meret = 0;
+    jaratok.tomb = (Jarat*) malloc(jaratok.meret * sizeof(Jarat));
     int szo_vege;
 
     do {
@@ -51,10 +53,14 @@ Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
         do {
             j.meret++;
             j.megallok = (Megallo*) realloc(j.megallok, j.meret * sizeof(Megallo));
-            Megallo *temp_m = megallo_keres(megallok, kov_szo(',', fajl, &szo_vege));
+            char *szo = kov_szo(',', fajl, &szo_vege);
+            Megallo *temp_m = megallo_keres(megallok, szo);
             if (temp_m != NULL) {
                 j.megallok[j.meret-1] = *temp_m;
+            } else {
+                printf("Sikertelen beolvasas. Nincs a keresett megallo elmentve (%s)!", szo);
             }
+            free(szo);
         } while (szo_vege != '\n');
 
         // megállók indulásai

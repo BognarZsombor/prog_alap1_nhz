@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "debugmalloc.h"
 #include "seged.h"
 
 char *kov_szo(char valaszto, FILE *fajl, int *szo_vege) {

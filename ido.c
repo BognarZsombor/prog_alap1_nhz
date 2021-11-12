@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include "debugmalloc.h"
 #include "ido.h"
 
 Ido str_to_ido(char *str) {
     Ido ido;
     sscanf(str, "%d:%d", &ido.ora, &ido.perc);
+    free(str);
     return ido;
 }
 

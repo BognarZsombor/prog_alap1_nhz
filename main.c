@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "debugmalloc.h"
 #include "ido.h"
 #include "megallo.h"
 #include "jarat.h"
@@ -66,70 +67,33 @@ char **sor_to_list(char const sor[]) {
         k++;
     }
 
-    // hány db elválasztó van a sor-ba -> hány paraméter lesz
-    int spaces = 0;
+    // hány db elválasztó van a sor-ba -> ennyi paraméter lesz + 1
+    int spaces = 1;
     for (int i = k; sor[i] != '\n'; ++i) {
         if (sor[i] == elvalaszto) {
             spaces++;
         }
     }
-    char **temp_sor = (char**) malloc(spaces * sizeof(char*));
+    char **temp_sor = (char**) malloc((spaces+1) * sizeof(char*));
 
     // sor szétválogatása
     spaces = 0;
-    temp_sor[0] = malloc(101 * sizeof(char));
+    temp_sor[0] = (char*) malloc(101 * sizeof(char));
     int j = 0;
     for (int i = k; sor[i] != '\n'; ++i) {
         if (sor[i] == elvalaszto) {
             temp_sor[spaces][j] = '\0';
             spaces++;
             j = 0;
-            temp_sor[spaces] = malloc(101 * sizeof(char));
+            temp_sor[spaces] = (char*) malloc(101 * sizeof(char));
         } else {
             temp_sor[spaces][j++] = sor[i];
         }
     }
     temp_sor[spaces][j] = '\0';
+    temp_sor[spaces+1] = "-1";
 
     return temp_sor;
-}
-
-/* utvonal_seged_fg
- * Az utvonalban van tárolva, hogy hol tartunk utazási időben. Az aktuális útvonal az utvonalban van tárolva.
- * Az összes útvonal az utvonalakban van tárolva.
- * */
-void utvonal_seged_fg(Megallo_tomb megallok, Jarat_tomb jaratok, Megallo m1, Megallo m2, Ido *indulasi_ido, Utvonal_tomb *utvonalak, Utvonal *utvonal) {
-    /*if (strcmp(m1.nev, m2.nev) == 0) {
-        // hozzáadás a kész útvonalakhoz
-        utvonalak->meret++;
-        utvonalak->tomb = (Utvonal*) realloc(utvonalak->tomb, utvonalak->meret * sizeof(Utvonal));
-        utvonalak->tomb[utvonalak->meret-1] = *utvonal;
-    } else {
-        // átszállás
-        utvonal->m_meret++;
-        utvonal->megallok = (Megallo*) realloc(utvonal->megallok, utvonal->m_meret * sizeof )
-        for (int i = 0; i < m1.meret; ++i) {
-            utvonal
-        }
-        // járat következő megállója
-        for (int i = 0; i < jaratok.meret; ++i) {
-            for (int j = 0; j < jaratok.tomb[i].meret; ++j) {
-                
-            }
-        }
-    }*/
-}
-
-void utvonal_fg(Megallo_tomb megallok, Jarat_tomb jaratok, char *k, char *v, char *ora) {
-    /*if (megallo_keres(megallok, k) == NULL || megallo_keres(megallok, v) == NULL) {
-        printf("Nincsenek ilyen megállók!");
-        return;
-    }
-    Megallo m1 = *megallo_keres(megallok, k);
-    Megallo m2 = *megallo_keres(megallok, v);
-    Ido indulasi_ido = str_to_ido(ora);
-
-    utvonal_seged_fg(megallok, jaratok, m1, m2, &indulasi_ido);*/
 }
 
 int main() {
@@ -151,15 +115,36 @@ int main() {
 
     bool futas = true;
     char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)
+    char **parancssor = NULL;
     while (futas) {
         printf("\nParancs(max 100 karakter):");
         if (fgets(sor, 101, stdin) == NULL) {
             printf("Hiba a sor beolvasasanal.");
         }
-        char **parancssor = sor_to_list(sor);
+
+        // előző parancs futtatása
+        if (strcmp(sor, "up\n")  != 0) {
+            if (parancssor != NULL) {
+                // előző memória felszabadítása
+                for (int i = 0; strcmp(parancssor[i], "-1") != 0; ++i) {
+                    free(parancssor[i]);
+                }
+                free(parancssor);
+            }
+
+            parancssor = sor_to_list(sor);
+        } else {
+            int i;
+            for (i = 0; strcmp(parancssor[i+1], "-1") != 0; ++i) {
+                printf("%s-", parancssor[i]);
+            }
+            printf("%s", parancssor[i]);
+            printf("\n");
+        }
+
         switch (str_to_parancs(parancssor[0])) {
             case segitseg:
-                printf("Parancsok: segitseg, mbeolvas, beolvas, mmentes, mentes, kiir, megallo, utvonal, kilep\n");
+                printf("Parancsok: up, segitseg, mbeolvas, beolvas, mmentes, mentes, kiir, megallo, utvonal, kilep\n");
                 break;
             case mbeolvas:
                 fajl = fopen(parancssor[1], "r");
@@ -202,12 +187,29 @@ int main() {
                 megallo_fg(jaratok, megallok, parancssor[1]);
                 break;
             case utvonal:
-                utvonal_fg(megallok, jaratok, parancssor[1], parancssor[2], parancssor[3]);
                 break;
             case kilep:
                 printf("Kilepes!\n");
+                // memória felszabadítása
+                for (int i = 0; strcmp(parancssor[i], "-1") != 0; ++i) {
+                    free(parancssor[i]);
+                }
+                free(parancssor);
+                for (int i = 0; i < jaratok.meret; ++i) {
+                    free(jaratok.tomb[i].nev);
+                    free(jaratok.tomb[i].idopontok);
+                    free(jaratok.tomb[i].megallok);
+                }
                 free(jaratok.tomb);
+                for (int i = 0; i < megallok.meret; ++i) {
+                    free(megallok.tomb[i].nev);
+                    for (int j = 0; j < megallok.tomb[i].meret; ++j) {
+                        free(megallok.tomb[i].atszallasok[j]);
+                    }
+                    free(megallok.tomb[i].atszallasok);
+                }
                 free(megallok.tomb);
+
                 futas = false;
                 break;
             case hibas:
