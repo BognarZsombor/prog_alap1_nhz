@@ -1,6 +1,6 @@
 b72 08:25 22:10 00:10
-megallo1,megallo2,megallo3,megallo1
+megallo1,megallo2,megallo3,megallo4
 00:00 00:38 1:03 1:42
 a36 09:45 20:50 00:25
-megallo2,megallo3,megallo5,megallo2
+megallo5,megallo6,megallo7,megallo2
 00:00 00:28 1:00 1:25
