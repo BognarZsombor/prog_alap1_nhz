@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "debugmalloc.h"
 #include "jarat.h"
 #include "megallo.h"
