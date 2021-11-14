@@ -5,6 +5,7 @@
 #include "megallo.h"
 #include "seged.h"
 
+
 void megallo_kiir(Megallo megallo) {
     printf("nev: %s\n", megallo.nev);
     printf("atszallasok: ");
@@ -23,24 +24,46 @@ Megallo *megallo_keres(Megallo_tomb megallok, char *nev) {
     return NULL;
 }
 
-Megallo_tomb mbeolvas_fg(FILE *fajl) {
-    Megallo_tomb megallok;
-    megallok.meret = 0;
-    megallok.tomb = (Megallo*) malloc(megallok.meret * sizeof(Megallo));
-    int szo_vege;
+void megallo_hozzaad(Megallo *elso_megallo, Megallo *m) {
+    Megallo *m1;
+    for (m1 = elso_megallo; m1->kov != NULL; m1 = m1->kov) {}
+    m1->kov = m;
+}
+
+Megallo *mbeolvas_fg(FILE *fajl) {
+    Megallo *elso_megallo = (Megallo*) malloc(sizeof(Megallo));
+    elso_megallo->kov = NULL;
+    int szo_vege = 0;
+    Megallo *m = (Megallo*) malloc(sizeof(Megallo));
+    elso_megallo->kov = m;
+
+    while (szo_vege != EOF) {
+        Megallo *temp_m = (Megallo*) malloc(sizeof(Megallo));
+        // megálló neve
+        temp_m->nev = kov_szo(',', fajl, &szo_vege);
+
+        // átszállások beolvasása
+        Megallo *a = (Megallo*) malloc(sizeof(Megallo));
+        m->atszallasok = a;
+        while (szo_vege != '\n' || szo_vege != EOF) {
+
+        }
+        m->kov = temp_m;
+        m = m->kov;
+    }
+
+    return elso_megallo;
 
     do {
         // főmegálló beolvasása
         Megallo m;
         m.nev = kov_szo(',', fajl, &szo_vege);
-        m.meret = 0;
 
         // további megállók beolvasása
-        m.atszallasok = (char**) malloc(m.meret * sizeof(char*));
+        Megallo *m;
 
         while (szo_vege != '\n' && szo_vege != EOF) {
-            m.meret++;
-            m.atszallasok = (char**) realloc(m.atszallasok, m.meret * sizeof(char*));
+            m.atszallasok
             m.atszallasok[m.meret-1] = kov_szo(',', fajl, &szo_vege);
         }
 
@@ -49,9 +72,6 @@ Megallo_tomb mbeolvas_fg(FILE *fajl) {
         megallok.tomb = (Megallo*) realloc(megallok.tomb, megallok.meret * sizeof(Megallo));
         megallok.tomb[megallok.meret-1] = m;
     } while (szo_vege != EOF);
-
-    fclose(fajl);
-    return megallok;
 }
 
 void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok) {

@@ -1,7 +1,10 @@
 #ifndef MAIN_C_IDO_H
 #define MAIN_C_IDO_H
 
-#include "structok.h"
+typedef struct Ido {
+    int ora, perc;
+    struct Ido *kov;
+} Ido;
 
 /* str_to_ido
  * Egy stringet Ido formátumba alakít át. A stringnek hh:mm formátumban kell lennie.

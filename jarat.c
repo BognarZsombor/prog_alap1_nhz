@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "debugmalloc.h"
+#include "ido.h"
 #include "jarat.h"
-#include "megallo.h"
 #include "seged.h"
 
 void jarat_kiir(Jarat jarat) {
@@ -31,11 +31,9 @@ Jarat *jarat_keres(Jarat_tomb jaratok, char *nev) {
     return NULL;
 }
 
-Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
-    Jarat_tomb jaratok;
-    jaratok.tomb = 0;
-    jaratok.meret = 0;
-    jaratok.tomb = (Jarat*) malloc(jaratok.meret * sizeof(Jarat));
+Jarat *beolvas_fg(FILE *fajl, Megallo *elso_megallo) {
+    Jarat *elso_jarat;
+    elso_jarat->kov = NULL;
     int szo_vege;
 
     do {
@@ -45,7 +43,6 @@ Jarat_tomb beolvas_fg(FILE *fajl, Megallo_tomb megallok) {
         j.elso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
         j.utolso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
         j.tovabbi_indulasok = str_to_ido(kov_szo(' ', fajl, NULL));
-        j.meret = 0;
 
         // megállók adatai
         j.megallok = (Megallo*) malloc(j.meret * sizeof(Megallo));

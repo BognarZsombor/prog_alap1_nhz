@@ -2,7 +2,13 @@
 #define MAIN_C_MEGALLO_H
 
 #include "ido.h"
-#include "structok.h"
+#include "jarat.h"
+
+typedef struct Megallo {
+    char *nev;
+    Megallo *atszallasok;
+    struct Megallo *kov;
+} Megallo;
 
 /* megallo_kiir
  * Kiirja a megadott járat adatait.

@@ -7,22 +7,6 @@
 #include "megallo.h"
 #include "jarat.h"
 
-/* Tevékenységlista: mindig van idopont és megálló.
- * Ha átszállás történt az adott megállóból a következőbe, akkor a járat NULL
- * Az idopont utolsó eleme mindig az aktuális utazásiidő
- * */
-typedef struct {
-    Megallo *megallok;
-    Jarat *jaratok;
-    Ido *idopontok;
-    int meret;
-} Utvonal;
-
-typedef struct {
-    Utvonal *tomb;
-    int meret;
-} Utvonal_tomb;
-
 typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, kiir, megallo, utvonal, kilep, hibas} parancsok;
 
 /* str_to_parancs
@@ -98,20 +82,20 @@ char **sor_to_list(char const sor[]) {
 
 int main() {
     // megállók és járatok listája
-    Jarat_tomb jaratok;
-    Megallo_tomb megallok;
+    Jarat* elso_jarat;
+    Megallo *elso_megallo;
 
     //alap fájlok beolvasása ha léteznek
     FILE *fajl = fopen("megallok.txt", "r");
     if (fajl) {
-        megallok = mbeolvas_fg(fajl);
+        elso_megallo = mbeolvas_fg(fajl);
+        fclose(fajl);
     }
-    fclose(fajl);
     fajl = fopen("jaratok.txt", "r");
     if (fajl) {
-        jaratok = beolvas_fg(fajl, megallok);
+        elso_jarat = beolvas_fg(fajl, elso_megallo);
+        fclose(fajl);
     }
-    fclose(fajl);
 
     bool futas = true;
     char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)

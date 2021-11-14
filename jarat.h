@@ -2,7 +2,15 @@
 #define MAIN_C_JARAT_H
 
 #include "ido.h"
-#include "structok.h"
+#include "megallo.h"
+
+typedef struct Jarat {
+    char *nev;
+    Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
+    Megallo *megallok;
+    Ido *idopontok;
+    struct Jarat *kov;
+} Jarat;
 
 /* jarat_kiir
  * Kiirja a megadott járat adatait.
