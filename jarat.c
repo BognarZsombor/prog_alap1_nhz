@@ -8,11 +8,9 @@
 Jarat *jarat_keres(Jarat *elso_jarat, char *nev) {
     for (Jarat *temp_j = elso_jarat->kov; temp_j != NULL; temp_j = temp_j->kov) {
         if (strcmp(temp_j->nev, nev) == 0) {
-            free(nev);
             return temp_j;
         }
     }
-    free(nev);
     return NULL;
 }
 

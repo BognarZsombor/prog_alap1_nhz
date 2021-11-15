@@ -8,25 +8,15 @@
 Megallo *megallo_keres(Megallo *elso_megallo, char *nev) {
     for (Megallo *temp_m = elso_megallo->kov; temp_m != NULL; temp_m = temp_m->kov) {
         if (strcmp(temp_m->nev, nev) == 0) {
-            free(nev);
             return temp_m;
         }
     }
-    free(nev);
     return NULL;
 }
 
 Megallo *mbeolvas_fg(Megallo *elso_megallo, FILE *fajl) {
     Megallo *m;
-    if (elso_megallo == NULL) {
-        // ha nincs még első elem felveszünk egy újat
-        elso_megallo = (Megallo*) malloc(sizeof(Megallo));
-        elso_megallo->kov = NULL;
-        m = elso_megallo;
-    } else {
-        // ha volt már első elem, elmegyünk a list végére
-        for (m = elso_megallo; m->kov != NULL; m = m->kov) {}
-    }
+    for (m = elso_megallo; m != NULL; m = m->kov) {}
     int szo_vege = 0;
 
     while (szo_vege != EOF) {
@@ -35,8 +25,7 @@ Megallo *mbeolvas_fg(Megallo *elso_megallo, FILE *fajl) {
         temp_m->nev = kov_szo(',', fajl, &szo_vege);
 
         // átszállások beolvasása
-        temp_m->atszallasok = (Megallo*) malloc(sizeof(Megallo));
-        temp_m->atszallasok->kov = NULL;
+        temp_m->atszallasok = NULL;
         Megallo *a = temp_m->atszallasok;
         while (szo_vege != '\n' && szo_vege != EOF) {
             Megallo *temp_a = (Megallo*) malloc(sizeof(Megallo));
@@ -47,7 +36,7 @@ Megallo *mbeolvas_fg(Megallo *elso_megallo, FILE *fajl) {
         }
 
         temp_m->kov = NULL;
-        m->kov = temp_m;
+        m = temp_m;
         m = m->kov;
     }
 

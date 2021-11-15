@@ -169,16 +169,18 @@ int main() {
             case kilep:
                 printf("Kilepes!\n");
                 // memória felszabadítása
-                Megallo *m = elso_megallo;
-                elso_megallo = elso_megallo->kov;
+                Megallo *m = elso_megallo->kov;
+                elso_megallo = elso_megallo->kov->kov;
+                free(elso_megallo);
                 for (; elso_megallo->kov != NULL; elso_megallo = elso_megallo->kov) {
                     free(m->nev);
                     free(m);
                     m = elso_megallo;
                 }
 
-                Jarat *j = elso_jarat;
-                elso_jarat = elso_jarat->kov;
+                Jarat *j = elso_jarat->kov;
+                elso_jarat = elso_jarat->kov->kov;
+                free(elso_jarat);
                 for (; elso_jarat->kov != NULL; elso_jarat = elso_jarat->kov) {
                     free(j->nev);
                     free(j);
