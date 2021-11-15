@@ -6,8 +6,7 @@
 #include "seged.h"
 
 Megallo *megallo_keres(Megallo *elso_megallo, char *nev) {
-    Megallo *temp_m;
-    for (temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
+    for (Megallo *temp_m = elso_megallo->kov; temp_m != NULL; temp_m = temp_m->kov) {
         if (strcmp(temp_m->nev, nev) == 0) {
             free(nev);
             return temp_m;
