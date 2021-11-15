@@ -2,19 +2,12 @@
 #define MAIN_C_MEGALLO_H
 
 #include "ido.h"
-#include "jarat.h"
 
 typedef struct Megallo {
     char *nev;
-    Megallo *atszallasok;
+    struct Megallo *atszallasok;
     struct Megallo *kov;
 } Megallo;
-
-/* megallo_kiir
- * Kiirja a megadott járat adatait.
- * @param Megallo megallo A kiirandó megálló
- * */
-void megallo_kiir(Megallo megallo);
 
 /* megallo_keres
  * Megkeres egy megállót a megadott tömbön, a neve alapján.
@@ -22,28 +15,22 @@ void megallo_kiir(Megallo megallo);
  * @param char* nev A keresett megálló neve
  * @return Megallo A megtalált megálló pointere
  * */
-Megallo *megallo_keres(Megallo_tomb megallok, char *nev);
+Megallo *megallo_keres(Megallo *elso_megallo, char *nev);
 
 /* mbeolvas_fg
  * Beolvassa a megadott fájlból a megállókat.
+ * @param Megallo* elso_megallo Ha ez az alap beolvasás ez NULL, ha további beolvasás akkor a megállók első megállója
  * @param FILE* fajl A fájl, amiből beolvassa a megállókat
  * @return Megallo_tomb Megállók listájának structja
  * */
-Megallo_tomb mbeolvas_fg(FILE *fajl);
-
-/* megallok_hozzaad
- * Hozzáad egy megállótömbhöz egy másik megállótömböt
- * @param Megallo_tomb megallok Amihez hozzáadjuk az új megállókat
- * @param Megallo_tomb temp_megallok Amit hozzáadunk az eredeti megállókhozs
- * */
-void megallok_hozzaad(Megallo_tomb megallok, Megallo_tomb temp_megallok);
+Megallo* mbeolvas_fg(Megallo *elso_megallo, FILE *fajl);
 
 /* megallo_fg
  * */
-void megallo_fg(Jarat_tomb jaratok, Megallo_tomb megallok, char *nev);
+void megallo_fg(Megallo *megallo);
 
 /* mmentes_fg
  * */
-void mmentes_fg(Megallo_tomb megallok, FILE *fajl);
+void mmentes_fg(Megallo *elso_megallo, FILE *fajl);
 
 #endif //MAIN_C_MEGALLO_H

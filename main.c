@@ -88,12 +88,12 @@ int main() {
     //alap fájlok beolvasása ha léteznek
     FILE *fajl = fopen("megallok.txt", "r");
     if (fajl) {
-        elso_megallo = mbeolvas_fg(fajl);
+        elso_megallo = mbeolvas_fg(NULL, fajl);
         fclose(fajl);
     }
     fajl = fopen("jaratok.txt", "r");
     if (fajl) {
-        elso_jarat = beolvas_fg(fajl, elso_megallo);
+        elso_jarat = beolvas_fg(NULL, fajl, elso_megallo);
         fclose(fajl);
     }
 
@@ -132,67 +132,58 @@ int main() {
                 break;
             case mbeolvas:
                 fajl = fopen(parancssor[1], "r");
-                Megallo_tomb temp_megallok;
                 if (fajl) {
-                    temp_megallok = mbeolvas_fg(fajl);
-                    megallok_hozzaad(megallok, temp_megallok);
-                    free(temp_megallok.tomb);
+                    elso_megallo = mbeolvas_fg(elso_megallo, fajl);
+                    fclose(fajl);
                 }
-                fclose(fajl);
                 break;
             case beolvas:
                 fajl = fopen(parancssor[1], "r");
-                Jarat_tomb temp_jaratok;
                 if (fajl) {
-                    temp_jaratok = beolvas_fg(fajl, megallok);
-                    jarat_hozzaad(jaratok, temp_jaratok);
-                    free(temp_jaratok.tomb);
+                    elso_jarat = beolvas_fg(elso_jarat, fajl, elso_megallo);
+                    fclose(fajl);
                 }
-                fclose(fajl);
                 break;
             case mentes:
                 fajl = fopen(parancssor[1], "w");
                 if (fajl) {
-                    mentes_fg(jaratok, fajl);
+                    mentes_fg(elso_jarat, fajl);
                     printf("Fájl elmentve!\n");
                 }
                 break;
             case mmentes:
                 fajl = fopen(parancssor[1], "w");
                 if (fajl) {
-                    mmentes_fg(megallok, fajl);
+                    mmentes_fg(elso_megallo, fajl);
                     printf("Fájl elmentve!\n");
                 }
                 break;
             case kiir:
-                kiir_fg(jaratok, parancssor[1]);
+                kiir_fg(jarat_keres(elso_jarat, parancssor[1]));
                 break;
             case megallo:
-                megallo_fg(jaratok, megallok, parancssor[1]);
+                megallo_fg(megallo_keres(elso_megallo, parancssor[1]));
                 break;
             case utvonal:
                 break;
             case kilep:
                 printf("Kilepes!\n");
                 // memória felszabadítása
-                for (int i = 0; strcmp(parancssor[i], "-1") != 0; ++i) {
-                    free(parancssor[i]);
+                Megallo *m = elso_megallo;
+                elso_megallo = elso_megallo->kov;
+                for (; elso_megallo->kov != NULL; elso_megallo = elso_megallo->kov) {
+                    free(m->nev);
+                    free(m);
+                    m = elso_megallo;
                 }
-                free(parancssor);
-                for (int i = 0; i < jaratok.meret; ++i) {
-                    free(jaratok.tomb[i].nev);
-                    free(jaratok.tomb[i].idopontok);
-                    free(jaratok.tomb[i].megallok);
+
+                Jarat *j = elso_jarat;
+                elso_jarat = elso_jarat->kov;
+                for (; elso_jarat->kov != NULL; elso_jarat = elso_jarat->kov) {
+                    free(j->nev);
+                    free(j);
+                    j = elso_jarat;
                 }
-                free(jaratok.tomb);
-                for (int i = 0; i < megallok.meret; ++i) {
-                    free(megallok.tomb[i].nev);
-                    for (int j = 0; j < megallok.tomb[i].meret; ++j) {
-                        free(megallok.tomb[i].atszallasok[j]);
-                    }
-                    free(megallok.tomb[i].atszallasok);
-                }
-                free(megallok.tomb);
 
                 futas = false;
                 break;
