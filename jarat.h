@@ -6,9 +6,10 @@
 
 typedef struct Jarat {
     char *nev;
-    Ido *elso_indulas, *utolso_indulas, *tovabbi_indulasok;
-    Megallo *megallok;
+    Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
+    char **megallok;
     Ido *idopontok;
+    int meret;
     struct Jarat *kov;
 } Jarat;
 

@@ -5,7 +5,8 @@
 
 typedef struct Megallo {
     char *nev;
-    struct Megallo *atszallasok;
+    char **atszallasok;
+    int meret;
     struct Megallo *kov;
 } Megallo;
 

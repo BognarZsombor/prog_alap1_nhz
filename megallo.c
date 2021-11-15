@@ -31,7 +31,7 @@ Megallo *mbeolvas_fg(Megallo *elso_megallo, FILE *fajl) {
             Megallo *temp_a = (Megallo*) malloc(sizeof(Megallo));
             temp_a->nev = kov_szo(',', fajl, &szo_vege);
             temp_a->kov = NULL;
-            a->kov = temp_a;
+            a = temp_a;
             a = a->kov;
         }
 
