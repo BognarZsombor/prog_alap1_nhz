@@ -35,24 +35,16 @@ Megallo *mbeolvas_fg(Megallo *elso_megallo, FILE *fajl) {
         // megálló neve
         temp_m->nev = kov_szo(',', fajl, &szo_vege);
 
-        if (szo_vege == EOF) {
-            free(temp_m);
-            break;
-        }
-
         // átszállások beolvasása
         temp_m->atszallasok = (Megallo*) malloc(sizeof(Megallo));
         temp_m->atszallasok->kov = NULL;
         Megallo *a = temp_m->atszallasok;
         while (szo_vege != '\n' && szo_vege != EOF) {
-            Megallo *temp_a = megallo_keres(elso_megallo, kov_szo(',', fajl, &szo_vege));
-            if (temp_a != NULL) {
-                temp_a->kov = NULL;
-                a->kov = temp_a;
-                a = a->kov;
-            } else {
-                free(temp_a);
-            }
+            Megallo *temp_a = (Megallo*) malloc(sizeof(Megallo));
+            temp_a->nev = kov_szo(',', fajl, &szo_vege);
+            temp_a->kov = NULL;
+            a->kov = temp_a;
+            a = a->kov;
         }
 
         temp_m->kov = NULL;

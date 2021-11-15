@@ -30,36 +30,35 @@ Jarat *beolvas_fg(Jarat *elso_jarat, FILE *fajl, Megallo *elso_megallo) {
     int szo_vege = 0;
 
     while (szo_vege != EOF) {
+        szo_vege = 0;
         // első sor adatai
         Jarat *temp_j = (Jarat*) malloc(sizeof(Jarat));
-        j->nev = kov_szo(' ', fajl, NULL);
-        j->elso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
-        j->utolso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
-        j->tovabbi_indulasok = str_to_ido(kov_szo(' ', fajl, NULL));
+        temp_j->nev = kov_szo(' ', fajl, NULL);
+        temp_j->elso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
+        temp_j->utolso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
+        temp_j->tovabbi_indulasok = str_to_ido(kov_szo(' ', fajl, NULL));
 
         // megállók
-        j->megallok = (Megallo*) malloc(sizeof(Megallo));
-        j->megallok->kov = NULL;
-        Megallo *m = j->megallok;
+        temp_j->megallok = (Megallo*) malloc(sizeof(Megallo));
+        temp_j->megallok->kov = NULL;
+        Megallo *m = temp_j->megallok;
 
         while (szo_vege != '\n' && szo_vege != EOF) {
-            Megallo *temp_m = megallo_keres(elso_megallo, kov_szo(',', fajl, &szo_vege));
-            if (temp_m != NULL) {
-                temp_m->kov = NULL;
-                m->kov = temp_m;
-                m = m->kov;
-            } else {
-                free(temp_m);
-            }
+            Megallo *temp_m = (Megallo*) malloc(sizeof(Megallo));
+            temp_m->nev = kov_szo(',', fajl, &szo_vege);
+            temp_m->kov = NULL;
+            m->kov = temp_m;
+            m = m->kov;
         }
 
         // időpontok
-        j->idopontok = (Ido*) malloc(sizeof(Ido));
-        j->idopontok->kov = NULL;
-        Ido *i = j->idopontok;
+        temp_j->idopontok = (Ido*) malloc(sizeof(Ido));
+        temp_j->idopontok->kov = NULL;
+        Ido *i = temp_j->idopontok;
+        szo_vege = 0;
 
         while (szo_vege != '\n' && szo_vege != EOF) {
-            Ido *temp_i = str_to_ido(kov_szo(',', fajl, &szo_vege));
+            Ido *temp_i = str_to_ido(kov_szo(' ', fajl, &szo_vege));
             temp_i->kov = NULL;
             i->kov = temp_i;
             i = i->kov;
