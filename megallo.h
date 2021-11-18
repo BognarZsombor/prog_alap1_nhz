@@ -2,9 +2,11 @@
 #define MAIN_C_MEGALLO_H
 
 #include "ido.h"
+struct Jarat;
 
 typedef struct Megallo {
     char *nev;
+    struct *Jarat;
     char **atszallasok;
     int meret;
     struct Megallo *kov;
