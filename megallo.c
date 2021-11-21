@@ -3,73 +3,95 @@
 #include <stdbool.h>
 #include "debugmalloc.h"
 #include "megallo.h"
-#include "seged.h"
 
-Megallo *megallo_keres(Megallo *elso_megallo, char *nev) {
-    for (Megallo *temp_m = elso_megallo->kov; temp_m != NULL; temp_m = temp_m->kov) {
-        if (strcmp(temp_m->nev, nev) == 0) {
-            return temp_m;
+void megallo_felszabadit(Megallo_list *elso_megallo) {
+    Megallo_list *temp_m_lemarado = elso_megallo;
+    Megallo_list *temp_m = elso_megallo->kov;
+
+    for (; temp_m != NULL; temp_m = temp_m->kov) {
+        free(temp_m_lemarado);
+        temp_m_lemarado = temp_m;
+    }
+}
+
+Megallo *megallo_keres(Megallo_list *elso_megallo, char *nev) {
+    for (Megallo_list *temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
+        if (strcmp(temp_m->megallo->nev, nev) == 0) {
+            return temp_m->megallo;
         }
     }
     return NULL;
 }
 
-Megallo *mbeolvas_fg(Megallo *elso_megallo, FILE *fajl) {
-    Megallo *m;
-    for (m = elso_megallo; m != NULL; m = m->kov) {}
-    int szo_vege = 0;
-
-    while (szo_vege != EOF) {
-        Megallo *temp_m = (Megallo*) malloc(sizeof(Megallo));
-        // megálló neve
-        temp_m->nev = kov_szo(',', fajl, &szo_vege);
-
-        // átszállások beolvasása
-        temp_m->atszallasok = NULL;
-        Megallo *a = temp_m->atszallasok;
-        while (szo_vege != '\n' && szo_vege != EOF) {
-            Megallo *temp_a = (Megallo*) malloc(sizeof(Megallo));
-            temp_a->nev = kov_szo(',', fajl, &szo_vege);
-            temp_a->kov = NULL;
-            a = temp_a;
-            a = a->kov;
-        }
-
-        temp_m->kov = NULL;
-        m = temp_m;
-        m = m->kov;
+Megallo_list *megallo_hozzaad(Megallo_list *elso_megallo, Megallo *megallo, Ido erkezes) {
+    if (elso_megallo == NULL) {
+        elso_megallo = (Megallo_list*) malloc(sizeof(Megallo_list));
+        elso_megallo->megallo = megallo;
+        elso_megallo->erkezes = erkezes;
+        elso_megallo->kov = NULL;
+        return elso_megallo;
     }
-
+    Megallo_list *temp_m;
+    for (temp_m = elso_megallo; temp_m->kov != NULL; temp_m = temp_m->kov) {}
+    temp_m->kov = (Megallo_list*) malloc(sizeof(Megallo_list));
+    temp_m->kov->megallo = megallo;
+    temp_m->kov->erkezes = erkezes;
+    temp_m->kov->kov = NULL;
     return elso_megallo;
 }
 
-void megallo_fg(Megallo *megallo) {
-    // megallo kiirasa
-    printf("nev: %s\n", megallo->nev);
-    printf("atszallasok: ");
-    Megallo *temp_a;
-    for (temp_a = megallo->atszallasok; temp_a != NULL; temp_a = temp_a->kov) {
-        printf("%s, ", temp_a->nev);
+Megallo_list *megallo_beolvas(Megallo_list *elso_megallo, FILE *fajl) {
+    char akt_sor[2000];
+    fscanf(fajl, "%2000[^\n]", akt_sor);
+    getc(fajl);
+    const char s[2] = ",";
+    char *akt_szo;
+    akt_szo = strtok(akt_sor, s);
+
+    // alap megállók beolvasása
+    while (akt_szo != NULL) {
+        Megallo *temp_m = (Megallo*) malloc(sizeof(Megallo));
+        int i;
+        for (i = 0; akt_szo[i] != '\0'; ++i) {
+            temp_m->nev[i] = akt_szo[i];
+        }
+        temp_m->nev[i] = '\0';
+        temp_m->atszallasok = NULL;
+        elso_megallo = megallo_hozzaad(elso_megallo, temp_m, str_to_ido("00:00"));
+        akt_szo = strtok(NULL, s);
     }
 
-    // jaratokbeli erkezesek kiirasa
-    /*for (Jarat *temp_j = elso_jarat; temp_j != NULL; temp_j = temp_j->kov) {
-        bool oda = true;
-        Megallo *temp_m = temp_j->megallok;
-        Ido *temp_i = temp_j->idopontok;
-        for (; temp_m != NULL; temp_m = temp_m->kov, temp_i = temp_i->kov) {
-            if (strcmp(temp_m->nev, megallo->nev) == 0) {
-                if (oda) {
-                    printf("\njarat: %s\n", temp_m->nev);
-                    oda = false;
-                }
-                Ido *elso_erkezes = ido_osszead(temp_j->elso_indulas, temp_i);
-                printf("elso erkezes: %02d:%02d, tovabbi erkezesek: %02d:%02d\n", elso_erkezes->ora, elso_erkezes->perc, temp_j->tovabbi_indulasok->ora, temp_j->tovabbi_indulasok->perc);
+    // átszállások beolvasása
+    while (fscanf(fajl, "%2000[^\n]", akt_sor) != EOF) {
+        getc(fajl);
+        akt_szo = strtok(akt_sor, s);
+        Megallo *temp_m = megallo_keres(elso_megallo, akt_szo);
+        akt_szo = strtok(NULL, s);
+
+        while (akt_szo != NULL) {
+            Megallo *temp_atszallas = megallo_keres(elso_megallo, akt_szo);
+            if (temp_atszallas != NULL) {
+                temp_m->atszallasok = megallo_hozzaad(temp_m->atszallasok, temp_atszallas, str_to_ido("00:00"));
+            } else {
+                printf("Nincs %s nevu megallo!", akt_szo);
             }
+            akt_szo = strtok(NULL, s);
         }
-    }*/
+    }
+    return elso_megallo;
 }
 
-void mmentes_fg(Megallo *elso_megallo, FILE *fajl) {
+void megallo_kiir(Megallo megallo) {
+    // megallo kiirasa
+    printf("nev: %s\n", megallo.nev);
+    printf("atszallasok: ");
+    Megallo_list *temp_a;
+    for (temp_a = megallo.atszallasok; temp_a->kov != NULL; temp_a = temp_a->kov) {
+        printf("%s, ", temp_a->megallo->nev);
+    }
+    printf("%s", temp_a->megallo->nev);
+}
+
+void megallo_mentes(Megallo_list *elso_megallo, FILE *fajl) {
 
 }

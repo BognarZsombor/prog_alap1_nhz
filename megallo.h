@@ -2,15 +2,20 @@
 #define MAIN_C_MEGALLO_H
 
 #include "ido.h"
-struct Jarat;
 
 typedef struct Megallo {
-    char *nev;
-    struct *Jarat;
-    char **atszallasok;
-    int meret;
-    struct Megallo *kov;
+    char nev[51];
+    struct Megallo_list *atszallasok;
+    Ido tav;
 } Megallo;
+
+typedef struct Megallo_list {
+    Megallo *megallo;
+    Ido erkezes;
+    struct Megallo_list *kov;
+} Megallo_list;
+
+void megallo_felszabadit(Megallo_list *elso_megallo);
 
 /* megallo_keres
  * Megkeres egy megállót a megadott tömbön, a neve alapján.
@@ -18,22 +23,26 @@ typedef struct Megallo {
  * @param char* nev A keresett megálló neve
  * @return Megallo A megtalált megálló pointere
  * */
-Megallo *megallo_keres(Megallo *elso_megallo, char *nev);
+Megallo *megallo_keres(Megallo_list *elso_megallo, char *nev);
 
-/* mbeolvas_fg
+/* megallo_hozzaad
+ * */
+Megallo_list *megallo_hozzaad(Megallo_list *elso_megallo, Megallo *megallo, Ido erkezes);
+
+/* megallo_beolvas
  * Beolvassa a megadott fájlból a megállókat.
  * @param Megallo* elso_megallo Ha ez az alap beolvasás ez NULL, ha további beolvasás akkor a megállók első megállója
  * @param FILE* fajl A fájl, amiből beolvassa a megállókat
  * @return Megallo_tomb Megállók listájának structja
  * */
-Megallo* mbeolvas_fg(Megallo *elso_megallo, FILE *fajl);
+Megallo_list *megallo_beolvas(Megallo_list *elso_megallo, FILE *fajl);
 
-/* megallo_fg
+/* megallo_kiir
  * */
-void megallo_fg(Megallo *megallo);
+void megallo_kiir(Megallo megallo);
 
-/* mmentes_fg
+/* megallo_mentes
  * */
-void mmentes_fg(Megallo *elso_megallo, FILE *fajl);
+void megallo_mentes(Megallo_list *elso_megallo, FILE *fajl);
 
 #endif //MAIN_C_MEGALLO_H

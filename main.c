@@ -82,18 +82,18 @@ char **sor_to_list(char const sor[]) {
 
 int main() {
     // megállók és járatok listája
-    Jarat* elso_jarat;
-    Megallo *elso_megallo;
+    Jarat_list *elso_jarat;
+    Megallo_list *elso_megallo;
 
     //alap fájlok beolvasása ha léteznek
     FILE *fajl = fopen("megallok.txt", "r");
     if (fajl) {
-        elso_megallo = mbeolvas_fg(NULL, fajl);
+        elso_megallo = megallo_beolvas(NULL, fajl);
         fclose(fajl);
     }
     fajl = fopen("jaratok.txt", "r");
     if (fajl) {
-        elso_jarat = beolvas_fg(NULL, fajl, elso_megallo);
+        elso_jarat = jarat_beolvas(NULL, fajl, elso_megallo);
         fclose(fajl);
     }
 
@@ -133,59 +133,74 @@ int main() {
             case mbeolvas:
                 fajl = fopen(parancssor[1], "r");
                 if (fajl) {
-                    elso_megallo = mbeolvas_fg(elso_megallo, fajl);
+                    elso_megallo = megallo_beolvas(elso_megallo, fajl);
                     fclose(fajl);
                 }
                 break;
             case beolvas:
                 fajl = fopen(parancssor[1], "r");
                 if (fajl) {
-                    elso_jarat = beolvas_fg(elso_jarat, fajl, elso_megallo);
+                    elso_jarat = jarat_beolvas(elso_jarat, fajl, elso_megallo);
                     fclose(fajl);
                 }
                 break;
             case mentes:
                 fajl = fopen(parancssor[1], "w");
                 if (fajl) {
-                    mentes_fg(elso_jarat, fajl);
+                    jarat_mentes(elso_jarat, fajl);
                     printf("Fájl elmentve!\n");
                 }
                 break;
             case mmentes:
                 fajl = fopen(parancssor[1], "w");
                 if (fajl) {
-                    mmentes_fg(elso_megallo, fajl);
+                    megallo_mentes(elso_megallo, fajl);
                     printf("Fájl elmentve!\n");
                 }
                 break;
             case kiir:
-                kiir_fg(jarat_keres(elso_jarat, parancssor[1]));
+            {
+                Jarat *temp_j = jarat_keres(elso_jarat, parancssor[1]);
+                if (temp_j != NULL) {
+                    jarat_kiir(*temp_j);
+                } else {
+                    printf("Nincs ilyen jarat!");
+                }
                 break;
+            }
             case megallo:
-                megallo_fg(megallo_keres(elso_megallo, parancssor[1]));
+            {
+                Megallo *temp_m = megallo_keres(elso_megallo, parancssor[1]);
+                if (temp_m != NULL) {
+                    megallo_kiir(*temp_m);
+                } else {
+                    printf("Nincs ilyen megallo!");
+                }
                 break;
+            }
             case utvonal:
                 break;
             case kilep:
                 printf("Kilepes!\n");
                 // memória felszabadítása
-                Megallo *m = elso_megallo->kov;
-                elso_megallo = elso_megallo->kov->kov;
-                free(elso_megallo);
-                for (; elso_megallo->kov != NULL; elso_megallo = elso_megallo->kov) {
-                    free(m->nev);
-                    free(m);
-                    m = elso_megallo;
+                // megállok
+                for (Megallo_list *temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
+                    megallo_felszabadit(temp_m->megallo->atszallasok);
+                    free(temp_m->megallo);
                 }
+                megallo_felszabadit(elso_megallo);
 
-                Jarat *j = elso_jarat->kov;
-                elso_jarat = elso_jarat->kov->kov;
-                free(elso_jarat);
-                for (; elso_jarat->kov != NULL; elso_jarat = elso_jarat->kov) {
-                    free(j->nev);
-                    free(j);
-                    j = elso_jarat;
+                // járatok
+                for (Jarat_list *temp_j = elso_jarat; temp_j != NULL; temp_j = temp_j->kov) {
+                    megallo_felszabadit(temp_j->jarat.megallok);
                 }
+                jarat_felszabadit(elso_jarat);
+
+                // parancssor
+                for (int i = 0; strcmp(parancssor[i], "-1") != 0; ++i) {
+                    free(parancssor[i]);
+                }
+                free(parancssor);
 
                 futas = false;
                 break;

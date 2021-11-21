@@ -1,87 +1,107 @@
 #include <stdio.h>
 #include <string.h>
 #include "debugmalloc.h"
-#include "ido.h"
 #include "jarat.h"
-#include "seged.h"
 
-Jarat *jarat_keres(Jarat *elso_jarat, char *nev) {
-    for (Jarat *temp_j = elso_jarat->kov; temp_j != NULL; temp_j = temp_j->kov) {
-        if (strcmp(temp_j->nev, nev) == 0) {
-            return temp_j;
+void jarat_felszabadit(Jarat_list *elso_jarat) {
+    Jarat_list *temp_m_lemarado = elso_jarat;
+    Jarat_list *temp_m = elso_jarat->kov;
+
+    for (; temp_m != NULL; temp_m = temp_m->kov) {
+        free(temp_m_lemarado);
+        temp_m_lemarado = temp_m;
+    }
+}
+
+Jarat *jarat_keres(Jarat_list *elso_jarat, char *nev) {
+    for (Jarat_list *temp_j = elso_jarat; temp_j != NULL; temp_j = temp_j->kov) {
+        if (strcmp(temp_j->jarat.nev, nev) == 0) {
+            return &temp_j->jarat;
         }
     }
     return NULL;
 }
 
-Jarat *beolvas_fg(Jarat *elso_jarat, FILE *fajl, Megallo *elso_megallo) {
-    Jarat *j;
+Jarat_list *jarat_hozzaad(Jarat_list *elso_jarat, Jarat jarat) {
     if (elso_jarat == NULL) {
-        // ha nincs még első elem felveszünk egy újat
-        elso_jarat = (Jarat*) malloc(sizeof(Jarat));
+        elso_jarat = (Jarat_list*) malloc(sizeof(Jarat_list));
+        elso_jarat->jarat = jarat;
         elso_jarat->kov = NULL;
-        j = elso_jarat;
-    } else {
-        // ha volt már első elem, elmegyünk a list végére
-        for (j = elso_jarat; j->kov != NULL; j = j->kov) {}
+        return elso_jarat;
     }
-    int szo_vege = 0;
-
-    while (szo_vege != EOF) {
-        szo_vege = 0;
-        // első sor adatai
-        Jarat *temp_j = (Jarat*) malloc(sizeof(Jarat));
-        temp_j->nev = kov_szo(' ', fajl, NULL);
-        temp_j->elso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
-        temp_j->utolso_indulas = str_to_ido(kov_szo(' ', fajl, NULL));
-        temp_j->tovabbi_indulasok = str_to_ido(kov_szo(' ', fajl, NULL));
-
-        // megállók
-        temp_j->megallok = (Megallo*) malloc(sizeof(Megallo));
-        temp_j->megallok->kov = NULL;
-        Megallo *m = temp_j->megallok;
-
-        while (szo_vege != '\n' && szo_vege != EOF) {
-            Megallo *temp_m = (Megallo*) malloc(sizeof(Megallo));
-            temp_m->nev = kov_szo(',', fajl, &szo_vege);
-            temp_m->kov = NULL;
-            m->kov = temp_m;
-            m = m->kov;
-        }
-
-        // időpontok
-        temp_j->idopontok = (Ido*) malloc(sizeof(Ido));
-        temp_j->idopontok->kov = NULL;
-        Ido *i = temp_j->idopontok;
-        szo_vege = 0;
-
-        while (szo_vege != '\n' && szo_vege != EOF) {
-            Ido *temp_i = str_to_ido(kov_szo(' ', fajl, &szo_vege));
-            temp_i->kov = NULL;
-            i->kov = temp_i;
-            i = i->kov;
-        }
-
-        temp_j->kov = NULL;
-        j->kov = temp_j;
-        j = j->kov;
-    }
-
+    Jarat_list *temp_j;
+    for (temp_j = elso_jarat; temp_j->kov != NULL; temp_j = temp_j->kov) {}
+    temp_j->kov = (Jarat_list*) malloc(sizeof(Jarat_list));
+    temp_j->kov->jarat = jarat;
+    temp_j->kov->kov = NULL;
     return elso_jarat;
 }
 
-void kiir_fg(Jarat *jarat) {
-    printf("nev: %s, elso indulas: %02d:%02d, utolso indulas: %02d:%02d, tovabbi indulasok: %02d:%02d\n", jarat->nev, jarat->elso_indulas->ora, jarat->elso_indulas->perc, jarat->utolso_indulas->ora, jarat->utolso_indulas->perc, jarat->tovabbi_indulasok->ora, jarat->tovabbi_indulasok->perc);
+Jarat_list *jarat_beolvas(Jarat_list *elso_jarat, FILE *fajl, Megallo_list *elso_megallo) {
+    char akt_sor[2000];
+    const char s[2] = ",";
 
-    printf("megallok/idopontok: ");
-    Megallo *temp_m = jarat->megallok;
-    Ido *temp_i = jarat->idopontok;
-    for (; temp_m != NULL; temp_m = temp_m->kov, temp_i = temp_i->kov) {
-        printf("%s/%02d:%02d, ", temp_m->nev, temp_i->ora, temp_i->perc);
+    while (fscanf(fajl, "%2000[^\n]", akt_sor) != EOF) {
+        getc(fajl);
+        char *akt_szo;
+        akt_szo = strtok(akt_sor, s);
+
+        Jarat temp_j;
+        temp_j.megallok = NULL;
+
+        // első sor adatai
+        int i;
+        for (i = 0; akt_szo[i] != '\0'; ++i) {
+            temp_j.nev[i] = akt_szo[i];
+        }
+        temp_j.nev[i] = '\0';
+        akt_szo = strtok(NULL, s);
+        temp_j.elso_indulas = str_to_ido(akt_szo);
+        akt_szo = strtok(NULL, s);
+        temp_j.utolso_indulas = str_to_ido(akt_szo);
+        akt_szo = strtok(NULL, s);
+        temp_j.tovabbi_indulasok = str_to_ido(akt_szo);
+        akt_szo = strtok(NULL, s);
+
+        while (akt_szo != NULL) {
+            // megállók
+            char megallonev[51];
+            for (i = 0; akt_szo[i] != '\0'; ++i) {
+                megallonev[i] = akt_szo[i];
+            }
+            megallonev[i] = '\0';
+            akt_szo = strtok(NULL, s);
+            char idostr[51];
+            for (i = 0; akt_szo[i] != '\0'; ++i) {
+                idostr[i] = akt_szo[i];
+            }
+            idostr[i] = '\0';
+
+            Megallo *megallo = megallo_keres(elso_megallo, megallonev);
+            if (megallo != NULL) {
+                temp_j.megallok = megallo_hozzaad(temp_j.megallok, megallo, str_to_ido(idostr));
+            } else {
+                printf("Nincs %s nevu megallo", megallonev);
+            }
+
+            akt_szo = strtok(NULL, s);
+        }
+        elso_jarat = jarat_hozzaad(elso_jarat, temp_j);
+    }
+    return elso_jarat;
+}
+
+void jarat_kiir(Jarat jarat) {
+    printf("nev: %s, elso indulas: %02d:%02d, utolso indulas: %02d:%02d, tovabbi indulasok: %02d:%02d\n", jarat.nev, jarat.elso_indulas.ora, jarat.elso_indulas.perc, jarat.utolso_indulas.ora, jarat.utolso_indulas.perc, jarat.tovabbi_indulasok.ora, jarat.tovabbi_indulasok.perc);
+
+    printf("megallok/idopontok:\n");
+    Megallo_list *temp_m;
+    for (temp_m = jarat.megallok; temp_m != NULL; temp_m = temp_m->kov) {
+        printf("%s/%02d:%02d\n", temp_m->megallo->nev, temp_m->erkezes.ora, temp_m->erkezes.perc);
     }
     printf("\n");
 }
 
-void mentes_fg(Jarat *elso_jarat, FILE *fajl) {
+void jarat_mentes(Jarat_list *elso_jarat, FILE *fajl) {
 
 }

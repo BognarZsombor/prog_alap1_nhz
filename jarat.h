@@ -5,13 +5,17 @@
 #include "megallo.h"
 
 typedef struct Jarat {
-    char *nev;
+    char nev[51];
     Ido elso_indulas, utolso_indulas, tovabbi_indulasok;
     Megallo_list *megallok;
-    Ido *idopontok;
-    int meret;
-    struct Jarat *kov;
 } Jarat;
+
+typedef struct Jarat_list {
+    Jarat jarat;
+    struct Jarat_list *kov;
+} Jarat_list;
+
+void jarat_felszabadit(Jarat_list *elso_jarat);
 
 /* jarat_keres
  * Megkeres egy járatot a megadott tömbön, a neve alapján.
@@ -19,21 +23,25 @@ typedef struct Jarat {
  * @param char* nev A keresett járat neve
  * @return Jarat* A megtalált járat pointere
  * */
-Jarat *jarat_keres(Jarat *elso_jarat, char *nev);
+Jarat *jarat_keres(Jarat_list *elso_jarat, char *nev);
 
-/* beolvas_fg
+/* jarat_hozzaad
+ * */
+Jarat_list *jarat_hozzaad(Jarat_list *elso_jarat, Jarat jarat);
+
+/* jarat_beolvasas
  * Beolvassa a megadott fájlból a járatokat.
  * @param FILE* fajl A fájl, amiből beolvassa a járatokat
  * @return Jarat_tomb Járatok listájának structja
  * */
-Jarat *beolvas_fg(Jarat *elso_jarat, FILE *fajl, Megallo *elso_megallo);
+Jarat_list *jarat_beolvas(Jarat_list *elso_jarat, FILE *fajl, Megallo_list *elso_megallo);
 
-/* kiir_fg
+/* jarat_kiir
  * */
-void kiir_fg(Jarat *jarat);
+void jarat_kiir(Jarat jarat);
 
-/* mentes_fg
+/* jarat_mentes
  * */
-void mentes_fg(Jarat *elso_jarat, FILE *fajl);
+void jarat_mentes(Jarat_list *elso_jarat, FILE *fajl);
 
 #endif //MAIN_C_JARAT_H
