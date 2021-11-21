@@ -7,7 +7,7 @@ void jarat_felszabadit(Jarat_list *elso_jarat) {
     Jarat_list *temp_m_lemarado = elso_jarat;
     Jarat_list *temp_m = elso_jarat->kov;
 
-    for (; temp_m != NULL; temp_m = temp_m->kov) {
+    for (; temp_m_lemarado != NULL; temp_m = temp_m->kov) {
         free(temp_m_lemarado);
         temp_m_lemarado = temp_m;
     }
@@ -94,12 +94,11 @@ Jarat_list *jarat_beolvas(Jarat_list *elso_jarat, FILE *fajl, Megallo_list *elso
 void jarat_kiir(Jarat jarat) {
     printf("nev: %s, elso indulas: %02d:%02d, utolso indulas: %02d:%02d, tovabbi indulasok: %02d:%02d\n", jarat.nev, jarat.elso_indulas.ora, jarat.elso_indulas.perc, jarat.utolso_indulas.ora, jarat.utolso_indulas.perc, jarat.tovabbi_indulasok.ora, jarat.tovabbi_indulasok.perc);
 
-    printf("megallok/idopontok:\n");
+    printf("megallok/idopont:\n");
     Megallo_list *temp_m;
     for (temp_m = jarat.megallok; temp_m != NULL; temp_m = temp_m->kov) {
         printf("%s/%02d:%02d\n", temp_m->megallo->nev, temp_m->erkezes.ora, temp_m->erkezes.perc);
     }
-    printf("\n");
 }
 
 void jarat_mentes(Jarat_list *elso_jarat, FILE *fajl) {

@@ -7,7 +7,7 @@
 #include "megallo.h"
 #include "jarat.h"
 
-typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, kiir, megallo, utvonal, kilep, hibas} parancsok;
+typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, jarat, megallo, utvonal, kilep, hibas} parancsok;
 
 /* str_to_parancs
  * A beérkető string alapján visszaadja a hozzátartozó parancsot
@@ -21,8 +21,8 @@ int str_to_parancs(char *parancs) {
         return mbeolvas;
     else if (strcmp(parancs, "beolvas") == 0)
         return beolvas;
-    else if (strcmp(parancs, "kiir") == 0)
-        return kiir;
+    else if (strcmp(parancs, "jarat") == 0)
+        return jarat;
     else if (strcmp(parancs, "mentes") == 0)
         return mentes;
     else if (strcmp(parancs, "mmentes") == 0)
@@ -128,7 +128,7 @@ int main() {
 
         switch (str_to_parancs(parancssor[0])) {
             case segitseg:
-                printf("Parancsok: up, segitseg, mbeolvas, beolvas, mmentes, mentes, kiir, megallo, utvonal, kilep\n");
+                printf("Parancsok: up, segitseg, mbeolvas, beolvas, mmentes, mentes, jarat, megallo, utvonal, kilep\n");
                 break;
             case mbeolvas:
                 fajl = fopen(parancssor[1], "r");
@@ -158,13 +158,13 @@ int main() {
                     printf("Fájl elmentve!\n");
                 }
                 break;
-            case kiir:
+            case jarat:
             {
                 Jarat *temp_j = jarat_keres(elso_jarat, parancssor[1]);
                 if (temp_j != NULL) {
                     jarat_kiir(*temp_j);
                 } else {
-                    printf("Nincs ilyen jarat!");
+                    printf("Nincs ilyen jarat!\n");
                 }
                 break;
             }
@@ -174,7 +174,7 @@ int main() {
                 if (temp_m != NULL) {
                     megallo_kiir(*temp_m);
                 } else {
-                    printf("Nincs ilyen megallo!");
+                    printf("Nincs ilyen megallo!\n");
                 }
                 break;
             }
