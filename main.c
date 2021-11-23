@@ -5,6 +5,7 @@
 #include "ido.h"
 #include "megallo.h"
 #include "jarat.h"
+#include "utvonal.h"
 
 typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, jarat, megallo, utvonal, kilep, hibas} parancsok;
 
@@ -125,7 +126,16 @@ int main() {
                 break;
             }
             case utvonal:
+            {
+                Megallo *start = megallo_keres(elso_megallo, parancssor[1]);
+                Megallo *cel = megallo_keres(elso_megallo, parancssor[2]);
+                if (start == NULL || cel == NULL) {
+                    printf("Nem létezik ilyen megálló!\n");
+                } else {
+                    utvonal_keres(*start, *cel);
+                }
                 break;
+            }
             case kilep:
                 printf("Kilepes!\n");
                 // memória felszabadítása
