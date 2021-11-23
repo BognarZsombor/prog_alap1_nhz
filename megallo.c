@@ -93,5 +93,18 @@ void megallo_kiir(Megallo megallo) {
 }
 
 void megallo_mentes(Megallo_list *elso_megallo, FILE *fajl) {
-
+    Megallo_list *temp_m;
+    for (temp_m = elso_megallo; temp_m->kov != NULL; temp_m = temp_m->kov) {
+        fprintf(fajl, "%s,", temp_m->megallo->nev);
+    }
+    fprintf(fajl, "%s\n", temp_m->megallo->nev);
+    
+    for (temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
+        Megallo_list *temp_a;
+        fprintf(fajl, "%s,", temp_m->megallo->nev);
+        for (temp_a = temp_m->megallo->atszallasok; temp_a->kov != NULL; temp_a = temp_a->kov) {
+            fprintf(fajl, "%s,", temp_a->megallo->nev);
+        }
+        fprintf(fajl, "%s\n", temp_a->megallo->nev);
+    }
 }

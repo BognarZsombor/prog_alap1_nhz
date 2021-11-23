@@ -102,5 +102,16 @@ void jarat_kiir(Jarat jarat) {
 }
 
 void jarat_mentes(Jarat_list *elso_jarat, FILE *fajl) {
-
+    Jarat_list *temp_j;
+    for (temp_j = elso_jarat; temp_j != NULL; temp_j = temp_j->kov) {
+        fprintf(fajl, "%s,", temp_j->jarat.nev);
+        fprintf(fajl, "%02d:%02d,", temp_j->jarat.elso_indulas.ora, temp_j->jarat.elso_indulas.perc);
+        fprintf(fajl, "%02d:%02d,", temp_j->jarat.utolso_indulas.ora, temp_j->jarat.utolso_indulas.perc);
+        fprintf(fajl, "%02d:%02d,", temp_j->jarat.tovabbi_indulasok.ora, temp_j->jarat.tovabbi_indulasok.perc);
+        Megallo_list *temp_m;
+        for (temp_m = temp_j->jarat.megallok; temp_m->kov != NULL; temp_m = temp_m->kov) {
+            fprintf(fajl, "%s,%02d:%02d,", temp_m->megallo->nev, temp_m->erkezes.ora, temp_m->erkezes.perc);
+        }
+        fprintf(fajl, "%s,%02d:%02d\n", temp_m->megallo->nev, temp_m->erkezes.ora, temp_m->erkezes.perc);
+    }
 }

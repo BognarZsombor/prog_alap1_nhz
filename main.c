@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include "debugmalloc.h"
@@ -37,49 +36,6 @@ int str_to_parancs(char *parancs) {
         return hibas;
 }
 
-/* sor_to_list
- * Szétszedi a beadott sort egy stringekből álló listára, aminek az első eleme a parancs, a többi pedig a hozzá tartozó paraméterek.
- * @param char* sor A beérkező string
- * @return char** A szóközött alapján szétszedett stringlista
- * */
-char **sor_to_list(char const sor[]) {
-    char elvalaszto = '-';
-
-    // a sor eleji felesleges spacek kihagyása
-    int k;
-    for (k = 0; sor[k] == ' '; ++k) {
-        k++;
-    }
-
-    // hány db elválasztó van a sor-ba -> ennyi paraméter lesz + 1
-    int spaces = 1;
-    for (int i = k; sor[i] != '\n'; ++i) {
-        if (sor[i] == elvalaszto) {
-            spaces++;
-        }
-    }
-    char **temp_sor = (char**) malloc((spaces+1) * sizeof(char*));
-
-    // sor szétválogatása
-    spaces = 0;
-    temp_sor[0] = (char*) malloc(101 * sizeof(char));
-    int j = 0;
-    for (int i = k; sor[i] != '\n'; ++i) {
-        if (sor[i] == elvalaszto) {
-            temp_sor[spaces][j] = '\0';
-            spaces++;
-            j = 0;
-            temp_sor[spaces] = (char*) malloc(101 * sizeof(char));
-        } else {
-            temp_sor[spaces][j++] = sor[i];
-        }
-    }
-    temp_sor[spaces][j] = '\0';
-    temp_sor[spaces+1] = "-1";
-
-    return temp_sor;
-}
-
 int main() {
     // megállók és járatok listája
     Jarat_list *elso_jarat;
@@ -98,32 +54,20 @@ int main() {
     }
 
     bool futas = true;
-    char sor[100+1]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)
-    char **parancssor = NULL;
+    char sor[101]; //100 karakter, hogy beleféljen fájl elérési út is ha szükséges (magában 50 karakter kb)
+    char *parancssor[10];
     while (futas) {
         printf("\nParancs(max 100 karakter):");
         if (fgets(sor, 101, stdin) == NULL) {
             printf("Hiba a sor beolvasasanal.");
         }
 
-        // előző parancs futtatása
-        if (strcmp(sor, "up\n")  != 0) {
-            if (parancssor != NULL) {
-                // előző memória felszabadítása
-                for (int i = 0; strcmp(parancssor[i], "-1") != 0; ++i) {
-                    free(parancssor[i]);
-                }
-                free(parancssor);
-            }
-
-            parancssor = sor_to_list(sor);
-        } else {
-            int i;
-            for (i = 0; strcmp(parancssor[i+1], "-1") != 0; ++i) {
-                printf("%s-", parancssor[i]);
-            }
-            printf("%s", parancssor[i]);
-            printf("\n");
+        // string parancssorba átirása
+        char elvalaszto[2] = "-";
+        sor[strlen(sor)-1] = '\0';
+        parancssor[0] = strtok(sor, elvalaszto);
+        for (int i = 1; parancssor[i-1] != NULL; ++i) {
+            parancssor[i] = strtok(NULL, elvalaszto);
         }
 
         switch (str_to_parancs(parancssor[0])) {
@@ -148,14 +92,16 @@ int main() {
                 fajl = fopen(parancssor[1], "w");
                 if (fajl) {
                     jarat_mentes(elso_jarat, fajl);
-                    printf("Fájl elmentve!\n");
+                    printf("Fajl elmentve!\n");
+                    fclose(fajl);
                 }
                 break;
             case mmentes:
                 fajl = fopen(parancssor[1], "w");
                 if (fajl) {
                     megallo_mentes(elso_megallo, fajl);
-                    printf("Fájl elmentve!\n");
+                    printf("Fajl elmentve!\n");
+                    fclose(fajl);
                 }
                 break;
             case jarat:
@@ -195,12 +141,6 @@ int main() {
                     megallo_felszabadit(temp_j->jarat.megallok);
                 }
                 jarat_felszabadit(elso_jarat);
-
-                // parancssor
-                for (int i = 0; strcmp(parancssor[i], "-1") != 0; ++i) {
-                    free(parancssor[i]);
-                }
-                free(parancssor);
 
                 futas = false;
                 break;
