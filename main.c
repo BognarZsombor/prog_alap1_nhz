@@ -132,7 +132,10 @@ int main() {
                 if (start == NULL || cel == NULL) {
                     printf("Nem létezik ilyen megálló!\n");
                 } else {
-                    utvonal_keres(*start, *cel);
+                    cel->tav = str_to_ido(parancssor[3]);
+                    if (utvonal_keres(*start, *cel, elso_jarat) == 0) {
+                        printf("Nincs elérhető útvonal a két megálló között!\n");
+                    }
                 }
                 break;
             }

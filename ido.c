@@ -12,6 +12,13 @@ int ido_to_int(Ido i1) {
     return i1.ora * 60 + i1.perc;
 }
 
+Ido int_to_ido(int i1) {
+    Ido ido;
+    ido.ora = i1 / 60;
+    ido.perc = i1 % 60;
+    return ido;
+}
+
 Ido ido_osszead(Ido i1, Ido i2) {
     Ido ido;
     int osszeg = ido_to_int(i1) + ido_to_int(i2);

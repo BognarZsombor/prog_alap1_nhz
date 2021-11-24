@@ -19,6 +19,13 @@ Ido str_to_ido(char *str);
  * */
 int ido_to_int(Ido i1);
 
+/* int_to_ido
+ * Egy int-et Ido formátumba alakít
+ * @param int i1 Az átváltandó szám
+ * @return Ido Az átváltott érték
+ * */
+Ido int_to_ido(int i1);
+
 /* ido_osszead
  * Összead két Ido tipust. Nem kezeli ha átcsúszik másik napra.
  * @param Ido i1 Az első időpont
