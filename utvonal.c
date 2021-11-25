@@ -11,14 +11,17 @@ int megallo_cmp(const void *m1, const void *m2) {
 }
 
 int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat) {
-    if (strcmp(cel.nev, start.nev) == 0) {
-        return 0;
+    if (strcmp(start.nev, cel.nev) == 0) {
+        return 1;
     } else {
         // innen elérhető megállók távjainak beállítása
         // átszállások
-        for (Megallo_list *temp_m = cel.atszallasok; temp_m != NULL; temp_m = temp_m->kov) {
-            if (ido_cmp(temp_m->megallo->tav, cel.tav) == 1) {
-                temp_m->megallo->tav = cel.tav;
+        Megallo akt_atszallasok[100];
+        int akt_atszallasok_meret = 0;
+        for (Megallo_list *temp_m = start.atszallasok; temp_m != NULL; temp_m = temp_m->kov) {
+            if (ido_cmp(temp_m->megallo->tav, start.tav) == 1) {
+                temp_m->megallo->tav = start.tav;
+                akt_atszallasok[akt_atszallasok_meret++] = *temp_m->megallo;
             }
         }
         // járatok
@@ -26,49 +29,50 @@ int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat) {
         Megallo akt_megallok[100];
         int akt_megallok_meret = 0;
         for (Jarat_list *temp_j = elso_jarat; temp_j != NULL; temp_j = temp_j->kov) {
-            for (Megallo_list *temp_m = temp_j->jarat.megallok; temp_m->kov != NULL; temp_m = temp_m->kov) {
-                if (strcmp(temp_m->megallo->nev, cel.nev) == 0) {
-                    Ido akt_indulas = int_to_ido((int) ceil((double)(ido_to_int(cel.tav) - ido_to_int(temp_j->jarat.elso_indulas) - ido_to_int(temp_m->kov->erkezes)) /
-                                 (double) ido_to_int(temp_j->jarat.tovabbi_indulasok)));
+            // hogyha az aktuális járatban benne van a start megálló
+            if (megallo_keres(temp_j->jarat.megallok, start.nev) != NULL) {
+                // végigmegyünk a járat megállóin és ha ez egy rovidebb út, innen is újrahívjuk majd a fv-t
+                Megallo_list *temp_m = temp_j->jarat.megallok;
+                for (; strcmp(temp_m->megallo->nev, start.nev) != 0; temp_m = temp_m->kov) {}
+                for (; temp_m->kov != NULL; temp_m = temp_m->kov) {
+                    int indulas_count = (int) ceil((double)(ido_to_int(start.tav) - ido_to_int(temp_j->jarat.elso_indulas) - ido_to_int(temp_m->kov->erkezes)) / (double) ido_to_int(temp_j->jarat.tovabbi_indulasok));
+                    Ido akt_indulas = ido_osszead(temp_j->jarat.elso_indulas, temp_m->kov->erkezes);
+                    Ido temp_i = int_to_ido(ido_to_int(temp_j->jarat.tovabbi_indulasok) * indulas_count);
+                    akt_indulas = ido_osszead(akt_indulas, temp_i);
                     if (ido_cmp(temp_m->kov->megallo->tav, akt_indulas) == 1) {
                         temp_m->kov->megallo->tav = akt_indulas;
+                        akt_megallok[akt_megallok_meret] = *temp_m->kov->megallo;
+                        int i;
+                        for (i = 0; temp_j->jarat.nev[i] != '\0'; ++i) {
+                            akt_megallok[akt_megallok_meret].jarat_atszallas[i] = temp_j->jarat.nev[i];
+                        }
+                        akt_megallok[akt_megallok_meret++].jarat_atszallas[i] = '\0';
                     }
-                    akt_megallok[akt_megallok_meret++] = *temp_m->kov->megallo;
                 }
             }
         }
 
         // fv újrahívása az innen elérhető megállókra táv szerint növekvő sorrendben
         // átszállások
-        Ido pre_min = str_to_ido("-1:-1");
-        for (Megallo_list *temp_m = start.atszallasok; temp_m != NULL; temp_m = temp_m->kov) {
-            Megallo mini = *start.atszallasok->megallo;
-            while (ido_cmp(pre_min, mini.tav) == 1) {
-                mini = *temp_m->kov->megallo;
-                temp_m = temp_m->kov;
-            }
-            // minkeresés
-            for (Megallo_list *temp_a = start.atszallasok; temp_a != NULL; temp_a = temp_a->kov) {
-                if (ido_cmp(mini.tav, temp_a->megallo->tav) == 1 && ido_cmp(mini.tav, pre_min) == 1) {
-                    mini.tav = temp_a->megallo->tav;
-                }
-            }
-            pre_min = mini.tav;
-            // fv újrahívása
-            if (utvonal_keres(start, mini, elso_jarat) == 1) {
-                printf("Átszállás %s megállóból %s megállóba / %02d:%02d-kor.\n", mini.nev, cel.nev, cel.tav.ora, cel.tav.perc);
+        // lista rendezése táv alapján
+        qsort(akt_megallok, akt_megallok_meret, sizeof(Megallo), megallo_cmp);
+
+        // fv újrahívása
+        for (int i = 0; i < akt_atszallasok_meret; ++i) {
+            if (utvonal_keres(akt_atszallasok[i], cel, elso_jarat) == 1) {
+                printf("Atszallas %s megallobol %s megalloba / %02d:%02d-kor.\n", start.nev, akt_atszallasok[i].nev, akt_atszallasok[i].tav.ora, akt_atszallasok[i].tav.perc);
                 return 1;
             }
         }
-        
+
         // járatok
         // lista rendezése tav alapján
         qsort(akt_megallok, akt_megallok_meret, sizeof(Megallo), megallo_cmp);
 
         // fv újrahívása
         for (int i = 0; i < akt_megallok_meret; ++i) {
-            if (utvonal_keres(start, akt_megallok[i], elso_jarat) == 1) {
-                printf("Átszállás %s járatról %s járatra / %02d:%02d-kor.\n", akt_megallok[i].nev, cel.nev, akt_megallok[i].tav.ora, akt_megallok[i].tav.perc);
+            if (utvonal_keres(akt_megallok[i], cel, elso_jarat) == 1) {
+                printf("Felszallas %s megalloban %s jaratra es utazas %s megalloig / erkezes: %02d:%02d-kor.\n", start.nev, akt_megallok[i].jarat_atszallas, akt_megallok[i].nev, akt_megallok[i].tav.ora, akt_megallok[i].tav.perc);
                 return 1;
             }
         }

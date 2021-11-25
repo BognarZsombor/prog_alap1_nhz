@@ -57,7 +57,8 @@ Megallo_list *megallo_beolvas(Megallo_list *elso_megallo, FILE *fajl) {
         }
         temp_m->nev[i] = '\0';
         temp_m->atszallasok = NULL;
-        elso_megallo = megallo_hozzaad(elso_megallo, temp_m, str_to_ido("25:00"));
+        temp_m->tav = str_to_ido("25:00");
+        elso_megallo = megallo_hozzaad(elso_megallo, temp_m, str_to_ido("00:00"));
         akt_szo = strtok(NULL, s);
     }
 
@@ -71,7 +72,7 @@ Megallo_list *megallo_beolvas(Megallo_list *elso_megallo, FILE *fajl) {
         while (akt_szo != NULL) {
             Megallo *temp_atszallas = megallo_keres(elso_megallo, akt_szo);
             if (temp_atszallas != NULL) {
-                temp_m->atszallasok = megallo_hozzaad(temp_m->atszallasok, temp_atszallas, str_to_ido("25:00"));
+                temp_m->atszallasok = megallo_hozzaad(temp_m->atszallasok, temp_atszallas, str_to_ido("00:00"));
             } else {
                 printf("Nincs %s nevu megallo!", akt_szo);
             }

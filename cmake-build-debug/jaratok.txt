@@ -1,2 +1,2 @@
-b72,08:25,22:10,00:10,megallo1,00:00,megallo2,00:38,megallo3,01:03,megallo4,01:42
-a36,09:45,20:50,00:25,megallo5,00:00,megallo6,00:28,megallo4,01:00,megallo2,01:25
+b72,08:25,22:10,00:10,megallo1,00:00,megallo2,00:38,megallo3,01:03,megallo4,01:42,megallo3,2:15,megallo2,2:55,megallo1,3:10
+a36,09:45,20:50,00:25,megallo5,00:00,megallo6,00:28,megallo4,01:00,megallo2,01:25,megallo4,1:55,megallo6,2:22,megallo5,2:49

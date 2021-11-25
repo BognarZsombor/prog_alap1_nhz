@@ -130,11 +130,15 @@ int main() {
                 Megallo *start = megallo_keres(elso_megallo, parancssor[1]);
                 Megallo *cel = megallo_keres(elso_megallo, parancssor[2]);
                 if (start == NULL || cel == NULL) {
-                    printf("Nem létezik ilyen megálló!\n");
+                    printf("Nem letezik ilyen megallo!\n");
                 } else {
-                    cel->tav = str_to_ido(parancssor[3]);
+                    start->tav = str_to_ido(parancssor[3]);
                     if (utvonal_keres(*start, *cel, elso_jarat) == 0) {
-                        printf("Nincs elérhető útvonal a két megálló között!\n");
+                        printf("Nincs elerheto utvonal a ket megallo kozott!\n");
+                    }
+                    // megállók távjának resetelése
+                    for (Megallo_list *temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
+                        temp_m->megallo->tav = str_to_ido("25:00");
                     }
                 }
                 break;

@@ -7,6 +7,7 @@ typedef struct Megallo {
     char nev[51];
     struct Megallo_list *atszallasok;
     Ido tav;
+    char jarat_atszallas[51];
 } Megallo;
 
 typedef struct Megallo_list {
