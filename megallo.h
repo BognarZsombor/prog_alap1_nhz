@@ -39,10 +39,17 @@ Megallo_list *megallo_hozzaad(Megallo_list *elso_megallo, Megallo *megallo, Ido 
 Megallo_list *megallo_beolvas(Megallo_list *elso_megallo, FILE *fajl);
 
 /* megallo_kiir
+ * Kiirja az adott megálló adatait
+ * @param Megallo megallo A kiirandó megálló
+ * @return
  * */
 void megallo_kiir(Megallo megallo);
 
 /* megallo_mentes
+ * Elmenti egy a beolvasással azonos formátumú fájlba a megadott megállókat tartalmazó lista elemeit.
+ * @param Megallo_list* elso_megallo A megadott megálló lista
+ * @param FILE* fajl A kiirandó fájl
+ * @return
  * */
 void megallo_mentes(Megallo_list *elso_megallo, FILE *fajl);
 

@@ -37,10 +37,17 @@ Jarat_list *jarat_hozzaad(Jarat_list *elso_jarat, Jarat jarat);
 Jarat_list *jarat_beolvas(Jarat_list *elso_jarat, FILE *fajl, Megallo_list *elso_megallo);
 
 /* jarat_kiir
+ * Kiirja az adott járat adatait
+ * @param Jarat jarat A kiirandó járat
+ * @return
  * */
 void jarat_kiir(Jarat jarat);
 
 /* jarat_mentes
+ * Elmenti egy a beolvasással azonos formátumú fájlba a megadott járatokat tartalmazó lista elemeit.
+ * @param Jarat_list* elso_jarat A megadott járat lista
+ * @param FILE* fajl A kiirandó fájl
+ * @return
  * */
 void jarat_mentes(Jarat_list *elso_jarat, FILE *fajl);
 

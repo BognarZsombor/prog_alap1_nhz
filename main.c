@@ -95,6 +95,8 @@ int main() {
                     jarat_mentes(elso_jarat, fajl);
                     printf("Fajl elmentve!\n");
                     fclose(fajl);
+                } else {
+                    printf("Fajl mentese nem sikerult!\n");
                 }
                 break;
             case mmentes:
@@ -103,6 +105,8 @@ int main() {
                     megallo_mentes(elso_megallo, fajl);
                     printf("Fajl elmentve!\n");
                     fclose(fajl);
+                } else {
+                    printf("Fajl mentese nem sikerult!\n");
                 }
                 break;
             case jarat:
