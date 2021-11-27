@@ -25,7 +25,7 @@ A **jarat**-tal kiirathatjuk egy járat adatait. A járat nevét kell paraméter
 A **megallo**-val kiirathatjuk egy megálló adatait. A megálló nevét kell paraméterben megadni hozzá.
 A **mentes**-sel elmenthetjük az eddig bevitt járatok listáját egy fájlba. A járat nevét kell megadni paraméterként hozzá.
 A **mmentes**-sel elmenthetjük az eddig bevitt megállók listáját egy fájlba. A megálló nevét kell paraméterként megadni hozzá.
-Az **utvonal**-lal a leirtak alapján tudunk egy útvonalat tervezni a két megadott megálló között.
+Az **utvonal**-lal a leirtak alapján tudunk egy útvonalat tervezni a két megadott megálló között. Paraméterekként az indulási és célmegállót, illetve az indulás időpontját kell megadni.
 A **kilep**-pel kilépünk a programból.
 
 
