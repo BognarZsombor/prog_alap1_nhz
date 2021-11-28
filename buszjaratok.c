@@ -73,7 +73,7 @@ int main() {
 
         switch (str_to_parancs(parancssor[0])) {
             case segitseg:
-                printf("Parancsok: up, segitseg, mbeolvas, beolvas, mmentes, mentes, jarat, megallo, utvonal, kilep\n");
+                printf("Parancsok: segitseg, mbeolvas, beolvas, mmentes, mentes, jarat, megallo, utvonal, kilep\n");
                 break;
             case mbeolvas:
                 fajl = fopen(parancssor[1], "r");
@@ -135,6 +135,8 @@ int main() {
                 Megallo *cel = megallo_keres(elso_megallo, parancssor[2]);
                 if (start == NULL || cel == NULL) {
                     printf("Nem letezik ilyen megallo!\n");
+                } else if (parancssor[3] == NULL) {
+                    printf("Nincs idopont megadva!\n");
                 } else {
                     start->tav = str_to_ido(parancssor[3]);
                     if (utvonal_keres(*start, *cel, elso_jarat) == 0) {

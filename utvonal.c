@@ -32,21 +32,30 @@ int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat) {
             // hogyha az aktuális járatban benne van a start megálló
             if (megallo_keres(temp_j->jarat.megallok, start.nev) != NULL) {
                 // végigmegyünk a járat megállóin és ha ez egy rovidebb út, innen is újrahívjuk majd a fv-t
+                // először elemgyünk az adott megállóig és az innen következő megállókat nézzük
                 Megallo_list *temp_m = temp_j->jarat.megallok;
                 for (; strcmp(temp_m->megallo->nev, start.nev) != 0; temp_m = temp_m->kov) {}
-                for (; temp_m->kov != NULL; temp_m = temp_m->kov) {
-                    int indulas_count = (int) ceil((double)(ido_to_int(start.tav) - ido_to_int(temp_j->jarat.elso_indulas) - ido_to_int(temp_m->kov->erkezes)) / (double) ido_to_int(temp_j->jarat.tovabbi_indulasok));
+                if (temp_m->kov != NULL) {
+                    // aktuális indulás kiszámolása
+                    int kulonbseg = ido_to_int(
+                            ido_kivon(start.tav, ido_osszead(temp_j->jarat.elso_indulas, temp_m->kov->erkezes)));
+                    int indulas_count = (int) ceil(
+                            (double) (kulonbseg) / (double) ido_to_int(temp_j->jarat.tovabbi_indulasok));
                     Ido akt_indulas = ido_osszead(temp_j->jarat.elso_indulas, temp_m->kov->erkezes);
                     Ido temp_i = int_to_ido(ido_to_int(temp_j->jarat.tovabbi_indulasok) * indulas_count);
                     akt_indulas = ido_osszead(akt_indulas, temp_i);
-                    if (ido_cmp(temp_m->kov->megallo->tav, akt_indulas) == 1) {
-                        temp_m->kov->megallo->tav = akt_indulas;
-                        akt_megallok[akt_megallok_meret] = *temp_m->kov->megallo;
-                        int i;
-                        for (i = 0; temp_j->jarat.nev[i] != '\0'; ++i) {
-                            akt_megallok[akt_megallok_meret].jarat_atszallas[i] = temp_j->jarat.nev[i];
+                    akt_indulas = ido_kivon(akt_indulas, temp_m->erkezes);
+
+                    for (; temp_m->kov != NULL; temp_m = temp_m->kov) {
+                        if (ido_cmp(temp_m->kov->megallo->tav, ido_osszead(akt_indulas, temp_m->kov->erkezes)) == 1) {
+                            temp_m->kov->megallo->tav = ido_osszead(akt_indulas, temp_m->kov->erkezes);
+                            akt_megallok[akt_megallok_meret] = *temp_m->kov->megallo;
+                            int i;
+                            for (i = 0; temp_j->jarat.nev[i] != '\0'; ++i) {
+                                akt_megallok[akt_megallok_meret].jarat_atszallas[i] = temp_j->jarat.nev[i];
+                            }
+                            akt_megallok[akt_megallok_meret++].jarat_atszallas[i] = '\0';
                         }
-                        akt_megallok[akt_megallok_meret++].jarat_atszallas[i] = '\0';
                     }
                 }
             }

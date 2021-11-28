@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "debugmalloc.h"
 #include "ido.h"
 
 Ido str_to_ido(char *str) {
@@ -26,6 +25,15 @@ Ido ido_osszead(Ido i1, Ido i2) {
     ido.perc = osszeg % 60;
     return ido;
 }
+
+Ido ido_kivon(Ido i1, Ido i2) {
+    Ido ido;
+    int kulonbseg = ido_to_int(i1) - ido_to_int(i2);
+    ido.ora = (kulonbseg / 60) % 24;
+    ido.perc = kulonbseg % 60;
+    return ido;
+}
+
 
 int ido_cmp(Ido i1, Ido i2) {
     int a = ido_to_int(i1);

@@ -1,7 +1,1 @@
-megallo1,megallo2,megallo3,megallo4,megallo5,megallo6
-megallo1,megallo2
-megallo2,megallo1
-megallo3,megallo5
-megallo4,megallo6
-megallo5,megallo3
-megallo6,megallo4
+megallo1,megallo2,megallo3,megallo4,megallo5,megallo6,megallo7,megallo8,megallo9,megallo10

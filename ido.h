@@ -34,6 +34,15 @@ Ido int_to_ido(int i1);
  * */
 Ido ido_osszead(Ido i1, Ido i2);
 
+/* ido_kivon
+ * Kivon két Ido tipust. Nem kezeli ha átcsúszik másik napra.
+ * @param Ido i1 Az első időpont
+ * @param Ido i2 A második időpont
+ * @return Ido A két időpont különbsége
+ * */
+Ido ido_kivon(Ido i1, Ido i2);
+
+
 /* ido_cmp
  * Megmondja két időtől, hogy melyik a nagyobb.
  * @param Ido i1 Az első időpont

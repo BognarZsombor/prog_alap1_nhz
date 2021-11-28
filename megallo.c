@@ -87,10 +87,12 @@ void megallo_kiir(Megallo megallo) {
     printf("nev: %s\n", megallo.nev);
     printf("atszallasok: ");
     Megallo_list *temp_a;
-    for (temp_a = megallo.atszallasok; temp_a->kov != NULL; temp_a = temp_a->kov) {
-        printf("%s, ", temp_a->megallo->nev);
+    if (megallo.atszallasok != NULL) {
+        for (temp_a = megallo.atszallasok; temp_a->kov != NULL; temp_a = temp_a->kov) {
+            printf("%s, ", temp_a->megallo->nev);
+        }
+        printf("%s\n", temp_a->megallo->nev);
     }
-    printf("%s\n", temp_a->megallo->nev);
 }
 
 void megallo_mentes(Megallo_list *elso_megallo, FILE *fajl) {
@@ -103,9 +105,11 @@ void megallo_mentes(Megallo_list *elso_megallo, FILE *fajl) {
     for (temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
         Megallo_list *temp_a;
         fprintf(fajl, "%s,", temp_m->megallo->nev);
-        for (temp_a = temp_m->megallo->atszallasok; temp_a->kov != NULL; temp_a = temp_a->kov) {
-            fprintf(fajl, "%s,", temp_a->megallo->nev);
+        if (temp_m->megallo->atszallasok != NULL) {
+            for (temp_a = temp_m->megallo->atszallasok; temp_a != NULL; temp_a = temp_a->kov) {
+                fprintf(fajl, "%s,", temp_a->megallo->nev);
+            }
+            fprintf(fajl, "%s\n", temp_a->megallo->nev);
         }
-        fprintf(fajl, "%s\n", temp_a->megallo->nev);
     }
 }
