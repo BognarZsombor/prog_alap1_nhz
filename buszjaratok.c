@@ -76,76 +76,102 @@ int main() {
                 printf("Parancsok: segitseg, mbeolvas, beolvas, mmentes, mentes, jarat, megallo, utvonal, kilep\n");
                 break;
             case mbeolvas:
-                fajl = fopen(parancssor[1], "r");
-                if (fajl) {
-                    elso_megallo = megallo_beolvas(elso_megallo, fajl);
-                    fclose(fajl);
+                if (parancssor[1] != NULL) {
+                    fajl = fopen(parancssor[1], "r");
+                    if (fajl) {
+                        elso_megallo = megallo_beolvas(elso_megallo, fajl);
+                        fclose(fajl);
+                    }
+                } else {
+                    printf("Nincs eleg parameter megadva.");
                 }
                 break;
             case beolvas:
-                fajl = fopen(parancssor[1], "r");
-                if (fajl) {
-                    elso_jarat = jarat_beolvas(elso_jarat, fajl, elso_megallo);
-                    fclose(fajl);
+                if (parancssor[1] != NULL) {
+                    fajl = fopen(parancssor[1], "r");
+                    if (fajl) {
+                        elso_jarat = jarat_beolvas(elso_jarat, fajl, elso_megallo);
+                        fclose(fajl);
+                    }
+                } else {
+                    printf("Nincs eleg paramter megadva.");
                 }
                 break;
             case mentes:
-                fajl = fopen(parancssor[1], "w");
-                if (fajl) {
-                    jarat_mentes(elso_jarat, fajl);
-                    printf("Fajl elmentve!\n");
-                    fclose(fajl);
+                if (parancssor[1] != NULL) {
+                    fajl = fopen(parancssor[1], "w");
+                    if (fajl) {
+                        jarat_mentes(elso_jarat, fajl);
+                        printf("Fajl elmentve!\n");
+                        fclose(fajl);
+                    } else {
+                        printf("Fajl mentese nem sikerult!\n");
+                    }
                 } else {
-                    printf("Fajl mentese nem sikerult!\n");
+                    printf("Nincs eleg parameter megadva.");
                 }
                 break;
             case mmentes:
-                fajl = fopen(parancssor[1], "w");
-                if (fajl) {
-                    megallo_mentes(elso_megallo, fajl);
-                    printf("Fajl elmentve!\n");
-                    fclose(fajl);
+                if (parancssor[1] != NULL) {
+                    fajl = fopen(parancssor[1], "w");
+                    if (fajl) {
+                        megallo_mentes(elso_megallo, fajl);
+                        printf("Fajl elmentve!\n");
+                        fclose(fajl);
+                    } else {
+                        printf("Fajl mentese nem sikerult!\n");
+                    }
                 } else {
-                    printf("Fajl mentese nem sikerult!\n");
+                    printf("Nincs eleg paramter megadva.");
                 }
                 break;
             case jarat:
             {
-                Jarat *temp_j = jarat_keres(elso_jarat, parancssor[1]);
-                if (temp_j != NULL) {
-                    jarat_kiir(*temp_j);
+                if (parancssor[1] != NULL) {
+                    Jarat *temp_j = jarat_keres(elso_jarat, parancssor[1]);
+                    if (temp_j != NULL) {
+                        jarat_kiir(*temp_j);
+                    } else {
+                        printf("Nincs ilyen jarat!\n");
+                    }
                 } else {
-                    printf("Nincs ilyen jarat!\n");
+                    printf("Nincs eleg parameter megadva.");
                 }
                 break;
             }
             case megallo:
             {
-                Megallo *temp_m = megallo_keres(elso_megallo, parancssor[1]);
-                if (temp_m != NULL) {
-                    megallo_kiir(*temp_m);
+                if (parancssor[1] != NULL) {
+                    Megallo *temp_m = megallo_keres(elso_megallo, parancssor[1]);
+                    if (temp_m != NULL) {
+                        megallo_kiir(*temp_m);
+                    } else {
+                        printf("Nincs ilyen megallo!\n");
+                    }
                 } else {
-                    printf("Nincs ilyen megallo!\n");
+                    printf("Nincs eleg parameter megadva.");
                 }
                 break;
             }
             case utvonal:
             {
-                Megallo *start = megallo_keres(elso_megallo, parancssor[1]);
-                Megallo *cel = megallo_keres(elso_megallo, parancssor[2]);
-                if (start == NULL || cel == NULL) {
-                    printf("Nem letezik ilyen megallo!\n");
-                } else if (parancssor[3] == NULL) {
-                    printf("Nincs idopont megadva!\n");
+                if (parancssor[1] != NULL && parancssor[2] != NULL && parancssor[3] != NULL) {
+                    Megallo *start = megallo_keres(elso_megallo, parancssor[1]);
+                    Megallo *cel = megallo_keres(elso_megallo, parancssor[2]);
+                    if (start == NULL || cel == NULL) {
+                        printf("Nem letezik ilyen megallo!\n");
+                    } else {
+                        start->tav = str_to_ido(parancssor[3]);
+                        if (utvonal_keres(*start, *cel, elso_jarat) == 0) {
+                            printf("Nincs elerheto utvonal a ket megallo kozott!\n");
+                        }
+                        // megállók távjának resetelése
+                        for (Megallo_list *temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
+                            temp_m->megallo->tav = str_to_ido("25:00");
+                        }
+                    }
                 } else {
-                    start->tav = str_to_ido(parancssor[3]);
-                    if (utvonal_keres(*start, *cel, elso_jarat) == 0) {
-                        printf("Nincs elerheto utvonal a ket megallo kozott!\n");
-                    }
-                    // megállók távjának resetelése
-                    for (Megallo_list *temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {
-                        temp_m->megallo->tav = str_to_ido("25:00");
-                    }
+                    printf("Nincs eleg parameter megadva.");
                 }
                 break;
             }

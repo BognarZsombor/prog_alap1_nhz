@@ -5,12 +5,15 @@
 #include "megallo.h"
 
 void megallo_felszabadit(Megallo_list *elso_megallo) {
-    Megallo_list *temp_m_lemarado = elso_megallo;
-    Megallo_list *temp_m = elso_megallo->kov;
+    if (elso_megallo != NULL) {
+        Megallo_list *temp_m_lemarado = elso_megallo;
+        Megallo_list *temp_m = elso_megallo->kov;
 
-    for (; temp_m_lemarado != NULL; temp_m = temp_m->kov) {
+        for (; temp_m != NULL; temp_m = temp_m->kov) {
+            free(temp_m_lemarado);
+            temp_m_lemarado = temp_m;
+        }
         free(temp_m_lemarado);
-        temp_m_lemarado = temp_m;
     }
 }
 

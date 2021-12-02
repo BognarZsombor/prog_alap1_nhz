@@ -4,12 +4,15 @@
 #include "jarat.h"
 
 void jarat_felszabadit(Jarat_list *elso_jarat) {
-    Jarat_list *temp_m_lemarado = elso_jarat;
-    Jarat_list *temp_m = elso_jarat->kov;
+    if (elso_jarat != NULL) {
+        Jarat_list *temp_m_lemarado = elso_jarat;
+        Jarat_list *temp_m = elso_jarat->kov;
 
-    for (; temp_m_lemarado != NULL; temp_m = temp_m->kov) {
+        for (; temp_m != NULL; temp_m = temp_m->kov) {
+            free(temp_m_lemarado);
+            temp_m_lemarado = temp_m;
+        }
         free(temp_m_lemarado);
-        temp_m_lemarado = temp_m;
     }
 }
 
