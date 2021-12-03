@@ -1,0 +1,8 @@
+b72,08:25,22:10,00:10,megallo1,00:00,megallo2,00:38,megallo3,01:03,megallo4,01:42
+b72v,09:25,22:10,00:10,megallo4,00:00,megallo3,00:38,megallo2,01:03,megallo1,01:42
+a36,08:25,20:50,00:25,megallo2,00:00,megallo5,00:13,megallo6,00:28,megallo4,01:00
+a36v,09:25,20:50,00:25,megallo4,00:00,megallo6,00:13,megallo5,00:28,megallo2,01:00
+c69,08:25,21:50,00:15,megallo7,00:00,megallo8,00:18,megallo9,00:30,megallo10,00:48
+c69v,09:25,21:50,00:15,megallo10,00:00,megallo9,00:18,megallo8,00:30,megallo7,00:48
+b45,08:25,20:50,00:30,megallo9,00:00,megallo6,00:22,megallo5,00:48,megallo1,01:05
+b45v,09:25,21:50,00:30,megallo1,00:00,megallo5,00:22,megallo6,00:48,megallo9,01:05

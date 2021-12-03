@@ -1,0 +1,2 @@
+Buszjáratok
+A program egy tömegközlekedési útvonalkereső kezdetleges, menüvezérelt változata. Be lehet vinni buszjáratokat, illetve megállókat fájlok segítségével, és megadni, melyik járat milyen útvonalon megy, mikor ér ezekbe a megállókba, illetve melyik megállók vannak gyalogos átszállásra egymástól. Ezután ezek a járatok és megállók között lehet útvonalat keresni a program segítségével.
