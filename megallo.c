@@ -95,6 +95,8 @@ void megallo_kiir(Megallo megallo) {
             printf("%s, ", temp_a->megallo->nev);
         }
         printf("%s\n", temp_a->megallo->nev);
+    } else {
+        printf("\n");
     }
 }
 

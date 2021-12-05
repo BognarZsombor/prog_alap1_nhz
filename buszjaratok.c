@@ -7,7 +7,7 @@
 #include "jarat.h"
 #include "utvonal.h"
 
-typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, jarat, megallo, utvonal, kilep, hibas} parancsok;
+typedef enum {segitseg, megallobeolvas, beolvas, mentes, megallomentes, jarat, megallo, utvonal, kilep, hibas} parancsok;
 
 /* str_to_parancs
  * A beérkető string alapján visszaadja a hozzátartozó parancsot
@@ -17,16 +17,16 @@ typedef enum {segitseg, mbeolvas, beolvas, mentes, mmentes, jarat, megallo, utvo
 int str_to_parancs(char *parancs) {
     if (strcmp(parancs, "segitseg") == 0)
         return segitseg;
-    if (strcmp(parancs, "mbeolvas") == 0)
-        return mbeolvas;
+    if (strcmp(parancs, "megallobeolvas") == 0)
+        return megallobeolvas;
     else if (strcmp(parancs, "beolvas") == 0)
         return beolvas;
     else if (strcmp(parancs, "jarat") == 0)
         return jarat;
     else if (strcmp(parancs, "mentes") == 0)
         return mentes;
-    else if (strcmp(parancs, "mmentes") == 0)
-        return mmentes;
+    else if (strcmp(parancs, "megallomentes") == 0)
+        return megallomentes;
     else if (strcmp(parancs, "megallo") == 0)
         return megallo;
     else if (strcmp(parancs, "utvonal") == 0)
@@ -73,13 +73,22 @@ int main() {
 
         switch (str_to_parancs(parancssor[0])) {
             case segitseg:
-                printf("Parancsok: segitseg, mbeolvas, beolvas, mmentes, mentes, jarat, megallo, utvonal, kilep\n");
+                printf("Parancsok: segitseg\n"
+                       "megallobeolvas-<fajl_neve>\n"
+                       "beolvas-<fajl_neve>\n"
+                       "megallomentes-<fajl_neve>\n"
+                       "mentes-<fajl_neve>\n"
+                       "jarat-<jarat_neve>\n"
+                       "megallo-<megallo_neve>\n"
+                       "utvonal-<start_megallo_neve>-<cel_megallo_neve>-<indulasi_idopont>\n"
+                       "kilep\n");
                 break;
-            case mbeolvas:
+            case megallobeolvas:
                 if (parancssor[1] != NULL) {
                     fajl = fopen(parancssor[1], "r");
                     if (fajl) {
                         elso_megallo = megallo_beolvas(elso_megallo, fajl);
+                        printf("Beolvasas sikeres!");
                         fclose(fajl);
                     }
                 } else {
@@ -91,6 +100,7 @@ int main() {
                     fajl = fopen(parancssor[1], "r");
                     if (fajl) {
                         elso_jarat = jarat_beolvas(elso_jarat, fajl, elso_megallo);
+                        printf("Beolvasas sikeres!");
                         fclose(fajl);
                     }
                 } else {
@@ -111,7 +121,7 @@ int main() {
                     printf("Nincs eleg parameter megadva.");
                 }
                 break;
-            case mmentes:
+            case megallomentes:
                 if (parancssor[1] != NULL) {
                     fajl = fopen(parancssor[1], "w");
                     if (fajl) {
@@ -163,7 +173,7 @@ int main() {
                     } else {
                         start->tav = str_to_ido(parancssor[3]);
                         if (utvonal_keres(*start, *cel, elso_jarat) == 0) {
-                            printf("Nincs elerheto utvonal a ket megallo kozott!\n");
+                            printf("Nincs elerheto utvonal a ket megallo kozott ebben az idopontban!\n");
                         }
                         // megállók távjának resetelése
                         for (Megallo_list *temp_m = elso_megallo; temp_m != NULL; temp_m = temp_m->kov) {

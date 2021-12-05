@@ -2,9 +2,19 @@
 
 ## Útvonalkeresés
 
-A megállók közötti útvonalkeresés a programban dijkstra algoritmusával van megvalósitva. Legelőször meghivjuk a függvényt a felhasználó által megadott két megállóra. Ezután végigmegyünk az induló megálló összes gyalog megtehető átszállásán, illetve ahova busszal lehet eljutni innen, és ezekre is meghivjuk újra a függvényt. Ilyenkor viszont már egyel közelebb vagyunk a célmegállónkhoz, igy egy idő után eljutunk a célmegállóhoz. Ezzel egy rekurziv programhoz jutunk.
+```c
+int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat);
+```
+
+A megállók közötti útvonalkeresés a programban dijkstra algoritmusával van megvalósitva. Legelőször meghivjuk a függvényt a felhasználó által megadott két megállóra. Ezután végigmegyünk az induló megálló összes gyalog megtehető átszállásán, illetve ahova busszal lehet eljutni innen, és ezekre is meghivjuk újra a függvényt. Ilyenkor viszont már egyel közelebb vagyunk a célmegállónkhoz, igy egy idő után eljutunk a célmegállóhoz. Ezzel egy rekurziv programhoz jutunk. Ha eljutunk a végére, tehát a start egyenlő lesz a cél megállóval a függvény 1-et ad vissza, mivel **int** a visszatérési értéke. Az előző meghívásokban, pedig megvizsgáljuk ezt a visszatérési értéket, és ha 1-et kaptunk kiírjuk az aktuálisan történt átszállást (megállók, vagy járatok között).
 Ezzel viszont még nem oldottuk meg a teljes problémát hiszen nekünk a legrövidebb út kell. Ehhez minden alkalommal mikor újra szeretnénk hivni a függvényt az összes elérhető megállóra, ezt aszerint kell sorban megtenni, hogy innen melyiket érjük el a leggyorsabban. Ezt a megállók listájában tárolom. Igy mindig meg kell nézni és elmenteni, hogy melyik megállóba mennyi idő alatt érünk oda, illetve mivel elmentjük ezt az adatot csak akkor kell innen az adott megállóba újra meghivni a függvényt, hogyha gyorsabban értük el mint eddig. Kizárólag a gyorsabb jó nekünk, hogy ne akadjon el egy végtelen ciklusban, hiszen a gyalogos átszállásoknál nem számolunk plusz időt.
 Ezáltal megtaláltuk a leggyorsabb utat a kezdőból a célmegállóba. Ahhoz, hogy esetlegesen a legkevesebb átszállásos vagy más kritériumos útvonalakat keressünk, a sorbarendezés kritériumát kellene megváltoztatunk.
+
+```c
+int megallo_cmp(const void *m1, const void *m2);
+```
+
+Az útvonaltervezésben van mégegy függvény, ami a sorberendezéshez összehasonlít két megállót a **tav** alapján és eszerint visszatér 1,0,-1 értékkel.
 
 ## Adatszerkezetek
 

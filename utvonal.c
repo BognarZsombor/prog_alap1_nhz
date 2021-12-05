@@ -33,6 +33,8 @@ int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat) {
             if (megallo_keres(temp_j->jarat.megallok, start.nev) != NULL) {
                 // végigmegyünk a járat megállóin és ha ez egy rovidebb út, innen is újrahívjuk majd a fv-t
                 // először elemgyünk az adott megállóig és az innen következő megállókat nézzük
+                // azért kell végigmennünk mégegyszer, mert a listában kell idáig eljutnunk és a megallo_keres nem Megallo_list,
+                // nem Megallo-t ad vissza, így nem tudjuk melyik megálló következik utána
                 Megallo_list *temp_m = temp_j->jarat.megallok;
                 for (; strcmp(temp_m->megallo->nev, start.nev) != 0; temp_m = temp_m->kov) {}
                 if (temp_m->kov != NULL) {
@@ -47,7 +49,8 @@ int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat) {
                     akt_indulas = ido_kivon(akt_indulas, temp_m->erkezes);
 
                     for (; temp_m->kov != NULL; temp_m = temp_m->kov) {
-                        if (ido_cmp(temp_m->kov->megallo->tav, ido_osszead(akt_indulas, temp_m->kov->erkezes)) == 1) {
+                        if (ido_cmp(temp_m->kov->megallo->tav, ido_osszead(akt_indulas, temp_m->kov->erkezes)) == 1 &&
+                                ido_cmp(temp_j->jarat.utolso_indulas, akt_indulas) == 1 && ido_cmp(akt_indulas, temp_j->jarat.elso_indulas) == 1) {
                             temp_m->kov->megallo->tav = ido_osszead(akt_indulas, temp_m->kov->erkezes);
                             akt_megallok[akt_megallok_meret] = *temp_m->kov->megallo;
                             int i;
@@ -64,7 +67,7 @@ int utvonal_keres(Megallo start, Megallo cel, Jarat_list *elso_jarat) {
         // fv újrahívása az innen elérhető megállókra táv szerint növekvő sorrendben
         // átszállások
         // lista rendezése táv alapján
-        qsort(akt_megallok, akt_megallok_meret, sizeof(Megallo), megallo_cmp);
+        qsort(akt_atszallasok, akt_atszallasok_meret, sizeof(Megallo), megallo_cmp);
 
         // fv újrahívása
         for (int i = 0; i < akt_atszallasok_meret; ++i) {
