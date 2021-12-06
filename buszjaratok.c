@@ -90,6 +90,8 @@ int main() {
                         elso_megallo = megallo_beolvas(elso_megallo, fajl);
                         printf("Beolvasas sikeres!");
                         fclose(fajl);
+                    } else {
+                        printf("Nem sikerult megnyitni a fajlt.");
                     }
                 } else {
                     printf("Nincs eleg parameter megadva.");
@@ -102,6 +104,8 @@ int main() {
                         elso_jarat = jarat_beolvas(elso_jarat, fajl, elso_megallo);
                         printf("Beolvasas sikeres!");
                         fclose(fajl);
+                    } else {
+                        printf("Nem sikerult megnyitni a fajlt.");
                     }
                 } else {
                     printf("Nincs eleg paramter megadva.");
